@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RRO Observation Checklist</title>
+<meta name="theme-color" content="#10466C">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:600 700;font-display:swap;src:url(fonts/Montserrat.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/OpenSans.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+<style>
+:root{
+  --ground:#F5F7FA; --card:#FFFFFF; --ink:#1A1A1A; --muted:#4B4F54; --faint:#7A8591;
+  --line:#D5DEE7; --line-2:#E9EEF3;
+  --navy:#10466C; --navy-ink:#FFFFFF; --head:#10466C;
+  --green:#0BA28B; --green-bg:#E3F5F1; --green-ink:#07705F;
+  --dev:#C2410C; --dev-bg:#FDEEE6; --dev-ink:#9A3412;
+  --no-bg:#EEF1F4;
+  --warn-bg:#FFF6DB; --warn-ink:#7A5A00;
+  --focus:#3C91E6;
+  --shadow:0 1px 2px rgba(16,70,108,.08);
+  --hfont:"Montserrat","Segoe UI",Roboto,Arial,sans-serif;
+  --bfont:"Open Sans","Segoe UI",Roboto,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0D1822; --card:#15232F; --ink:#E7EDF2; --muted:#AEB9C4; --faint:#8593A1;
+    --line:#2A3B4A; --line-2:#20303E;
+    --navy:#0E3A59; --navy-ink:#FFFFFF; --head:#8CC0E6;
+    --green:#27B4A4; --green-bg:#123A35; --green-ink:#5FD6C6;
+    --dev:#F08A5D; --dev-bg:#3A2217; --dev-ink:#F6A884;
+    --no-bg:#1E2C39;
+    --warn-bg:#3A3112; --warn-ink:#F0CF6B;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0D1822; --card:#15232F; --ink:#E7EDF2; --muted:#AEB9C4; --faint:#8593A1;
+  --line:#2A3B4A; --line-2:#20303E;
+  --navy:#0E3A59; --navy-ink:#FFFFFF; --head:#8CC0E6;
+  --green:#27B4A4; --green-bg:#123A35; --green-ink:#5FD6C6;
+  --dev:#F08A5D; --dev-bg:#3A2217; --dev-ink:#F6A884;
+  --no-bg:#1E2C39;
+  --warn-bg:#3A3112; --warn-ink:#F0CF6B;
+  --shadow:none;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--ground);color:var(--ink);font-family:var(--bfont);font-size:16px;line-height:1.45;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:var(--navy-ink)}
+.top .bar{max-width:760px;margin:0 auto;padding:10px 16px 8px;display:flex;align-items:center;gap:12px}
+.top .ttl{flex:1;min-width:0}
+.top h1{margin:0;font-family:var(--hfont);font-size:16px;font-weight:700;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .sub{font-size:12.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.14);white-space:nowrap}
+.sync.err{background:#B91C1C}
+.prog{height:4px;background:rgba(255,255,255,.18)}
+.prog i{display:block;height:100%;width:0;background:var(--green);transition:width .25s}
+.chips{max-width:760px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;padding:8px 16px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--navy-ink);text-decoration:none;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.12);white-space:nowrap}
+.chips a.dev{background:var(--dev);color:#fff}
+
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:14px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px;scroll-margin-top:118px}
+.card > header{padding:13px 14px 10px;border-bottom:1px solid var(--line-2);display:flex;align-items:baseline;gap:10px}
+.card > header h2{margin:0;font-family:var(--hfont);font-size:15px;font-weight:700;color:var(--head);text-wrap:balance;flex:1}
+.card > header .rs{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.card > header .cnt{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.card .hint{font-size:13px;color:var(--muted);padding:10px 14px 0;margin:0}
+.body{padding:12px 14px 14px;display:grid;gap:12px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+@media (max-width:420px){.grid2{grid-template-columns:1fr}}
+.f label{display:block;font-family:var(--hfont);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.f input,.f select,.f textarea{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:16px}
+.f textarea{min-height:70px;resize:vertical}
+.f input::placeholder,.f textarea::placeholder{color:var(--faint)}
+.row{display:flex;gap:8px}
+.row > *{flex:1;min-width:0}
+.now{flex:0 0 auto;min-height:46px;padding:0 14px;border-radius:9px;border:1px solid var(--line);background:var(--no-bg);font-weight:700;font-size:14px;cursor:pointer}
+.num{font-variant-numeric:tabular-nums}
+
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 auto;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:14px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+
+/* checklist items */
+.item{border-top:1px solid var(--line-2);padding:12px 14px}
+.item:first-of-type{border-top:0}
+.item .q{font-size:15.5px;margin-bottom:9px}
+.tri{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.tri button{min-height:46px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tri .ok[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.tri .dv[aria-pressed="true"]{background:var(--dev);border-color:var(--dev);color:#fff}
+.tri .no[aria-pressed="true"]{background:var(--no-bg);border-color:var(--faint);color:var(--ink)}
+.item.s-ok{background:linear-gradient(90deg,var(--green) 0 4px,transparent 4px)}
+.item.s-dev{background:linear-gradient(90deg,var(--dev) 0 4px,transparent 4px)}
+.item .note{margin-top:8px}
+.item .note input{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:15px}
+.devbox{margin-top:10px;padding:12px;border-radius:10px;background:var(--dev-bg);display:grid;gap:10px}
+.devbox .dh{font-family:var(--hfont);font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dev-ink)}
+.devbox .f label{color:var(--dev-ink)}
+
+/* list entries */
+.entry{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:10px}
+.entry.devent{border-left:4px solid var(--dev)}
+.entry.closed{opacity:.8;border-left:4px solid var(--green)}
+.entry.open{border-left:4px solid var(--dev)}
+.entry .eh{display:flex;align-items:center;gap:8px}
+.entry .eh b{font-family:var(--hfont);font-size:13px;color:var(--head);flex:1}
+.entry .origin{font-size:12.5px;color:var(--muted)}
+.x{min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:transparent;font-size:13px;color:var(--muted);cursor:pointer}
+.add{min-height:46px;border:1.5px dashed var(--line);border-radius:10px;background:transparent;font-weight:700;color:var(--head);cursor:pointer;font-size:14px}
+.empty{font-size:14px;color:var(--muted);margin:0}
+
+.check{display:flex;gap:12px;align-items:flex-start;padding:10px 2px;border-top:1px solid var(--line-2);cursor:pointer}
+.check:first-child{border-top:0}
+.check input{flex:0 0 auto;width:26px;height:26px;margin:0;accent-color:var(--green)}
+.check span{font-size:15px}
+
+/* bottom bar */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.dock .in{max-width:760px;margin:0 auto;display:flex;gap:8px}
+.dock button{min-height:50px;border-radius:11px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:14.5px;cursor:pointer;padding:0 14px}
+.dock .primary{flex:1;background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.dock .gap{background:var(--warn-bg);color:var(--warn-ink);border-color:transparent}
+.dock .gap.clear{background:var(--green-bg);color:var(--green-ink)}
+
+/* sheet */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(5,15,25,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:760px;max-height:90%;border-radius:16px 16px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet .sh{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sheet .sh h3{margin:0;flex:1;font-family:var(--hfont);font-size:16px;color:var(--head)}
+.sheet .sb{padding:14px 16px;overflow:auto;display:grid;gap:12px}
+.sheet textarea{width:100%;min-height:40vh;border:1px solid var(--line);border-radius:10px;padding:12px;font:13px/1.5 ui-monospace,Consolas,monospace;background:var(--ground)}
+.sheet .acts{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.sheet .acts button{flex:1;min-height:50px;border-radius:11px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:15px;cursor:pointer}
+.sheet .acts .primary{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.gaps{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.gaps li{font-size:14px;padding:8px 10px;border-radius:8px;background:var(--warn-bg);color:var(--warn-ink)}
+.gaps li.soft{background:var(--no-bg);color:var(--muted)}
+.gaps li.ok{background:var(--green-bg);color:var(--green-ink)}
+.hist{display:grid;gap:8px}
+.hist button{text-align:left;min-height:54px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer}
+.hist button.cur{border-color:var(--green);background:var(--green-bg)}
+.hist b{display:block;font-size:14.5px}
+.hist small{color:var(--muted);font-size:12.5px}
+.newbox{display:grid;gap:8px;padding:12px;border-radius:10px;background:var(--no-bg)}
+.newbox p{margin:0;font-size:14px}
+.newbox button{min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:700;cursor:pointer}
+.newbox .primary{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--card);font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:99px;z-index:50}
+.foot{font-size:12.5px;color:var(--muted);text-align:center;margin:6px 0 10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="bar">
+    <div class="ttl"><h1 id="hTitle">RRO Daily Observation</h1><div class="sub" id="hSub">New inspection</div></div>
+    <span class="sync" id="sync">Saved on this phone</span>
+  </div>
+  <div class="prog"><i id="progFill"></i></div>
+  <nav class="chips" id="chips" aria-label="Sections"></nav>
+</div>
+
+<main id="app"></main>
+
+<div class="dock"><div class="in">
+  <button id="btnHist" type="button">Inspections</button>
+  <button id="btnGaps" class="gap" type="button">Gaps</button>
+  <button id="btnReport" class="primary" type="button">Report text</button>
+</div></div>
+
+<div id="sheetHost"></div>
+<div id="toastHost"></div>
+
+<script>
+/* ------------------------------------------------------------------ data */
+var CHECK_SECTIONS = [
+  { id:"site", title:"Site, safety and protection", items:[
+    "Material storage and protection from weather",
+    "Dumpster placement and site cleanliness",
+    "Fall protection, warning lines, ladder tie-off",
+    "Building watertight, areas in process dried in",
+    "Evidence of water intrusion",
+    "Protection of adjacent surfaces and building components",
+    "Daily cleanup and securement of materials"
+  ]},
+  { id:"tear", title:"Tear-off and substrate", items:[
+    "Existing roof removed to the structural deck where specified",
+    "Deck condition after tear-off",
+    "Deteriorated, damaged or wet decking (quantify sq ft or sheets)",
+    "Abandoned penetrations removed and closed",
+    "Existing nailers, curbs and edge conditions"
+  ]},
+  { id:"insul", title:"Insulation and coverboard", items:[
+    "Insulation type, thickness and layer count against the scope",
+    "Attachment: adhesive pattern or fastener pattern against the spec",
+    "Joints staggered between layers",
+    "Gaps between boards (note widths)",
+    "Tapered insulation and crickets against the drainage layout",
+    "Coverboard type, thickness and attachment (read the label)",
+    "Damaged or wet insulation, stored or installed"
+  ]},
+  { id:"memb", title:"Membrane", items:[
+    "Membrane type, thickness and manufacturer (read the label)",
+    "Adhesive coverage and application",
+    "Wrinkles, fishmouths, voids or unadhered areas",
+    "Lap alignment and lap width",
+    "Heat-welded seams: continuous weld and bleed-out",
+    "Seam probing or test welds (record results)",
+    "Membrane rolled into adhesive",
+    "Temporary tie-ins and night seals"
+  ]},
+  { id:"flash", title:"Flashing and details", items:[
+    "Base flashing at walls and curbs",
+    "Base flashing height, 8\" NRCA minimum (measure it)",
+    "Pipe flashings, pitch pans and penetration details",
+    "Pre-molded accessories where required",
+    "Termination bar and water block sealant",
+    "Counterflashing",
+    "Drain, scupper and gutter tie-ins",
+    "Expansion joints",
+    "Edge metal and coping installation and securement"
+  ]},
+  { id:"wood", title:"Wood blocking and edges", items:[
+    "Fire-treated wood blocking installed",
+    "Blocking height relative to the finished roof",
+    "Blocking fastening and edge securement",
+    "Framing at expansion joints and equipment curbs",
+    "Warped, damaged or loose wood"
+  ]},
+  { id:"mech", title:"Mechanical and penetrations", items:[
+    "Units raised to flashing height where required",
+    "Membrane beneath RTUs where specified",
+    "Pipe penetrations flashed and sealed",
+    "Unused penetrations removed and decked over",
+    "Coordination with mechanical and electrical trades"
+  ]},
+  { id:"drain", title:"Drainage", items:[
+    "Slope and drainage pattern",
+    "Low spots or ponding (note size and depth)",
+    "Crickets and tapered system at drains",
+    "Water path to drains, gutters and scuppers",
+    "Areas where water gets trapped"
+  ]}
+];
+var AGAINST = ["Scope of work","Detail / drawing","Manufacturer requirement","NRCA / accepted practice","Other"];
+var PREPARED = ["Owner","Owner's representative","Design authority","Consultant engaging AssetRoof"];
+var FINAL_CHECKS = [
+  ["cc_tag","Report photos tagged Inspection in CompanyCam"],
+  ["cc_cap","Every tagged photo captioned with the point, not the location"],
+  ["cc_map","Aerial or roof plan marked with today's work area"],
+  ["rb_notify","Every deviation names who was notified and when"],
+  ["rb_direct","Answers given on the roof recorded as communicated, not as direction"],
+  ["rb_verdict","Notes state facts and numbers, no opinion of the crew"],
+  ["rb_due","Report due to the contractor before work starts tomorrow"]
+];
+var OBSERVER = "Chad Board, RRO #2823";
+var LS_KEY = "rro_checklist_v1";
+
+/* --------------------------------------------------------------- helpers */
+function pad(n){ return (n<10?"0":"")+n; }
+function todayISO(){ var d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function nowHM(){ var d=new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+function fmtDate(iso){ if(!iso) return ""; var p=iso.split("-"); return p.length===3? p[1]+"/"+p[2]+"/"+p[0] : iso; }
+function fmtTime(hm){ if(!hm) return ""; var p=hm.split(":"), h=+p[0], ap=h<12?"AM":"PM"; h=h%12||12; return h+":"+p[1]+" "+ap; }
+function pad3(n){ n=String(n); while(n.length<3) n="0"+n; return n; }
+function getP(o,p){ return p.split(".").reduce(function(a,k){ return a==null?a:a[k]; },o); }
+function setP(o,p,v){ var ks=p.split("."), a=o; for(var i=0;i<ks.length-1;i++){ if(a[ks[i]]==null) a[ks[i]]=/^\d+$/.test(ks[i+1])?[]:{}; a=a[ks[i]]; } a[ks[ks.length-1]]=v; }
+function itemLabel(key){ var p=key.split("_"); var s=CHECK_SECTIONS.filter(function(x){return x.id===p[0];})[0]; return s? s.items[+p[1]] : key; }
+function secTitle(key){ var p=key.split("_"); var s=CHECK_SECTIONS.filter(function(x){return x.id===p[0];})[0]; return s? s.title : ""; }
+
+function blank(){
+  return {
+    id: uid(), created: Date.now(), updated: 0,
+    meta:{ project:"", address:"", reportNo:"001", date:todayISO(), arrive:"", depart:"",
+      preparedType:"", preparedFor:"", distribution:"", designAuthority:"",
+      contractor:"", crewChief:"", crewCount:"", trades:"", visitors:"", equipment:"" },
+    wx:{ temp:"", rh:"", wind:"", windDir:"", sky:"", precip:"", stop:"", stopMin:"", stopWhy:"" },
+    scope:{ assembly:"", area:"" },
+    items:{},
+    qty:{ installed:"", delivered:"", testing:"" },
+    extraDevs:[], comms:[], carried:[], checks:{}
+  };
+}
+/* A new inspection on the same project keeps the project facts and every item still open. */
+function nextFrom(prev){
+  var n = blank(), m = prev.meta;
+  ["project","address","preparedType","preparedFor","distribution","designAuthority","contractor","crewChief"].forEach(function(k){ n.meta[k]=m[k]||""; });
+  n.meta.reportNo = pad3((parseInt(m.reportNo,10)||0)+1);
+  n.scope.assembly = prev.scope.assembly||"";
+  var origin = "Report "+(m.reportNo||"")+", "+fmtDate(m.date);
+  (prev.carried||[]).forEach(function(c){ if(c.status!=="closed") n.carried.push({id:c.id, title:c.title, origin:c.origin, status:"open", note:""}); });
+  /* Never reuse an open-item number: count closed items and the running counter too. */
+  var seq = (prev.carried||[]).reduce(function(a,c){ var k=parseInt(String(c.id).replace(/\D/g,""),10); return isNaN(k)?a:Math.max(a,k); }, prev.oiSeq||0);
+  function pushDev(title, d){
+    if(d && d.status==="corrected") return;
+    seq++; n.carried.push({ id:"OI-"+seq, title:title+(d&&d.loc?" ("+d.loc+")":""), origin:origin, status:"open", note:"" });
+  }
+  Object.keys(prev.items||{}).forEach(function(k){ var it=prev.items[k]; if(it.s==="dev") pushDev(itemLabel(k)+(it.n?": "+it.n:""), it.dev||{}); });
+  (prev.extraDevs||[]).forEach(function(d){ pushDev(d.title||"Deviation", d); });
+  n.oiSeq = seq;
+  return n;
+}
+
+/* ------------------------------------------------------------- storage */
+/* Everything lives on this phone. Nothing is sent anywhere unless you tap Share or Back up. */
+var S, storeOK=true;
+function lsRead(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){ return null; } }
+function lsWriteAll(all){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(all)); storeOK=true; }
+  catch(e){ storeOK=false; toast("Phone storage is full. Back up and delete old inspections."); }
+  setSync();
+}
+function lsWrite(){
+  var all = lsRead() || {all:{}};
+  all.all = all.all||{}; all.all[S.id]=S; all.current=S.id;
+  lsWriteAll(all);
+}
+function loadLocal(){ var a=lsRead(); if(a && a.all && a.current && a.all[a.current]) return a.all[a.current]; return null; }
+function allInspections(){
+  var a=lsRead(); if(!a||!a.all) return S?[S]:[];
+  return Object.keys(a.all).map(function(k){ return a.all[k]; }).sort(function(x,y){ return (y.updated||0)-(x.updated||0); });
+}
+function setSync(){
+  var el=document.getElementById("sync");
+  el.className = "sync"+(storeOK?"":" err");
+  el.textContent = storeOK ? (navigator.onLine===false ? "Offline · saved on phone" : "Saved on phone") : "Not saved";
+}
+window.addEventListener("online", setSync); window.addEventListener("offline", setSync);
+function touch(){ S.updated = Date.now(); lsWrite(); }
+function listInspections(){ return Promise.resolve(allInspections()); }
+/* Ask Android to keep this app's storage even when the phone runs low on space. */
+if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(function(){}); }
+
+/* ------------------------------------------------------- share and backup */
+function slug(s){ return String(s||"inspection").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40); }
+function baseName(x){ var m=x.meta||{}; return "RRO "+slug(m.project)+" "+(m.reportNo||"")+" "+(m.date||""); }
+function saveFile(name, text, type){
+  var blob=new Blob([text],{type:type}), url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+}
+async function shareFiles(files, title, fallbackText){
+  try{
+    if(navigator.canShare && navigator.canShare({files:files})){ await navigator.share({files:files, title:title}); return "shared"; }
+    if(navigator.share && fallbackText){ await navigator.share({title:title, text:fallbackText}); return "shared"; }
+  }catch(e){ if(e && e.name==="AbortError") return "cancelled"; }
+  files.forEach(function(f){ f.text().then(function(t){ saveFile(f.name, t, f.type); }); });
+  return "saved";
+}
+function shareInspection(){
+  var name=baseName(S), txt=buildReport(), json=JSON.stringify({app:"rro-checklist", version:1, inspections:[S]}, null, 1);
+  return shareFiles([
+    new File([txt], name+".txt", {type:"text/plain"}),
+    new File([json], name+".json", {type:"application/json"})
+  ], name, txt);
+}
+function backupAll(){
+  var d=new Date(), stamp=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  var json=JSON.stringify({app:"rro-checklist", version:1, inspections:allInspections()}, null, 1);
+  return shareFiles([new File([json], "RRO backup "+stamp+".json", {type:"application/json"})], "RRO backup "+stamp);
+}
+function restoreFrom(file){
+  return file.text().then(function(t){
+    var data=JSON.parse(t), list=(data && data.inspections) || (data && data.meta ? [data] : []);
+    if(!list.length) throw new Error("No inspections in that file.");
+    var all=lsRead()||{all:{}}; all.all=all.all||{}; var added=0, newer=0;
+    list.forEach(function(x){
+      if(!x || !x.id || !x.meta) return;
+      var cur=all.all[x.id];
+      if(!cur){ all.all[x.id]=x; added++; }
+      else if((x.updated||0) > (cur.updated||0)){ all.all[x.id]=x; newer++; }
+    });
+    var latest=Object.keys(all.all).sort(function(a,b){ return (all.all[b].updated||0)-(all.all[a].updated||0); })[0];
+    all.current=latest; lsWriteAll(all); S=clone(all.all[latest]); renderAll();
+    return added+" added, "+newer+" updated";
+  });
+}
+function deleteInspection(id){
+  var all=lsRead(); if(!all||!all.all) return;
+  delete all.all[id];
+  if(id===S.id){ var ids=Object.keys(all.all); S = ids.length ? all.all[ids[0]] : blank(); all.current=S.id; all.all[S.id]=S; }
+  lsWriteAll(all); renderAll();
+}
+
+/* ---------------------------------------------------------------- render */
+function field(label, bind, opts){
+  opts = opts||{};
+  var v = getP(S,bind); v = v==null?"":v;
+  var id = "f_"+bind.replace(/\./g,"_");
+  var inner;
+  if(opts.area) inner = '<textarea id="'+id+'" data-bind="'+bind+'" placeholder="'+esc(opts.ph||"")+'">'+esc(v)+'</textarea>';
+  else if(opts.select) inner = '<select id="'+id+'" data-bind="'+bind+'"><option value=""></option>'+opts.select.map(function(o){ return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>'; }).join("")+'</select>';
+  else inner = '<input id="'+id+'" data-bind="'+bind+'" type="'+(opts.type||"text")+'"'+(opts.mode?' inputmode="'+opts.mode+'"':'')+(opts.list?' list="'+opts.list+'"':'')+' value="'+esc(v)+'" placeholder="'+esc(opts.ph||"")+'"'+(opts.type==="time"||opts.mode?' class="num"':'')+'>';
+  if(opts.now) inner = '<div class="row">'+inner+'<button type="button" class="now" data-now="'+bind+'">Now</button></div>';
+  return '<div class="f'+(opts.full?' full':'')+'"><label for="'+id+'">'+esc(label)+'</label>'+inner+'</div>';
+}
+function seg(bind, options){
+  var v = getP(S,bind)||"";
+  return '<div class="seg" role="group">'+options.map(function(o){ return '<button type="button" data-seg="'+bind+'" data-val="'+esc(o)+'" aria-pressed="'+(o===v)+'">'+esc(o)+'</button>'; }).join("")+'</div>';
+}
+function card(id, title, rs, body, extraHead){
+  return '<section class="card" id="'+id+'"><header><h2>'+esc(title)+'</h2>'+(extraHead||"")+(rs?'<span class="rs">'+esc(rs)+'</span>':'')+'</header>'+body+'</section>';
+}
+function devFields(prefix, d, withTitle){
+  return (withTitle? field("What was observed", prefix+".title", {ph:"Hole in substrate beneath membrane corner"}) : "")+
+    field("Where", prefix+".loc", {ph:"West section, NW corner"})+
+    '<div class="grid2">'+field("Measured against", prefix+".against", {select:AGAINST})+field("Reference", prefix+".ref", {ph:"Detail 4/R-501, 8\" min."})+'</div>'+
+    '<div class="grid2">'+field("Notified (name, company)", prefix+".who", {ph:"Name, company"})+field("Time notified", prefix+".when", {type:"time", now:true})+'</div>'+
+    '<div class="f"><label>Status</label>'+seg(prefix+".status", ["open","corrected"]).replace(/>open</,">Open<").replace(/>corrected</,">Corrected on site<")+'</div>';
+}
+
+function renderAll(){
+  var h = "";
+  var m = S.meta;
+
+  h += card("sec-id","Report identification","Report §2",
+    '<div class="body"><div class="grid2">'+
+      field("Project","meta.project",{full:true, ph:"Building name, roof area"})+
+      field("Address","meta.address",{full:true, ph:"Street, city"})+
+      field("Report no.","meta.reportNo",{mode:"numeric", ph:"004"})+
+      field("Date of inspection","meta.date",{type:"date"})+
+      field("Arrived","meta.arrive",{type:"time", now:true})+
+      field("Departed","meta.depart",{type:"time", now:true})+
+      field("Prepared for","meta.preparedType",{select:PREPARED})+
+      field("Prepared for (name)","meta.preparedFor",{ph:"Owner, through consultant"})+
+      field("Distribution","meta.distribution",{full:true, ph:"Owner contact, design authority, contractor PM"})+
+      field("Design authority","meta.designAuthority",{full:true, ph:"Name, firm"})+
+    '</div><p class="empty">Observed by '+esc(OBSERVER)+'</p></div>');
+
+  h += card("sec-crew","Crew, trades and equipment","Report §5",
+    '<div class="body"><div class="grid2">'+
+      field("Roofing contractor","meta.contractor",{ph:"Company name"})+
+      field("Crew chief","meta.crewChief",{ph:"Name"})+
+      field("Crew count","meta.crewCount",{mode:"numeric", ph:"6"})+
+      field("Other trades on site","meta.trades",{ph:"Electrician, 2"})+
+      field("Visitors","meta.visitors",{full:true, ph:"Name, company, purpose"})+
+      field("Equipment on site","meta.equipment",{full:true, ph:"Crane, kettle, robotic welder, generator"})+
+    '</div></div>');
+
+  h += card("sec-wx","Weather","Report §2",
+    '<p class="hint">Enter what you read on site. Anything left blank gets filled from weather data for the hours on site.</p>'+
+    '<div class="body"><div class="grid2">'+
+      field("Temp °F","wx.temp",{mode:"numeric", ph:"90"})+
+      field("Humidity %","wx.rh",{mode:"numeric", ph:"49"})+
+      field("Wind mph","wx.wind",{mode:"numeric", ph:"10"})+
+      field("Wind from","wx.windDir",{ph:"SSE"})+
+    '</div>'+
+    '<div class="f"><label>Sky</label>'+seg("wx.sky",["Clear","Partly cloudy","Overcast","Rain"])+'</div>'+
+    '<div class="f"><label>Precipitation while on site</label>'+seg("wx.precip",["None","Light","Moderate","Heavy"])+'</div>'+
+    '<div class="f"><label>Weather-related work stoppage</label>'+seg("wx.stop",["No","Yes"])+'</div>'+
+    (S.wx.stop==="Yes" ? '<div class="grid2">'+field("Stoppage minutes","wx.stopMin",{mode:"numeric", ph:"45"})+field("Reason","wx.stopWhy",{ph:"Rain, wind over 25 mph"})+'</div>' : "")+
+    '</div>');
+
+  h += card("sec-scope","Scope and area worked","Report §5",
+    '<div class="body">'+
+      field("Assembly being installed (from the scope of work)","scope.assembly",{area:true, ph:"2 layers 2.6\" polyiso, 5/8\" glass mat coverboard adhered, 60 mil TPO"})+
+      field("Roof area or section worked today","scope.area",{ph:"West sections, north parapet"})+
+    '</div>');
+
+  CHECK_SECTIONS.forEach(function(sec){
+    var done=0, devs=0;
+    var body = sec.items.map(function(txt,i){
+      var key=sec.id+"_"+i, it=S.items[key]||{};
+      if(it.s) done++; if(it.s==="dev") devs++;
+      var b = "items."+key;
+      return '<div class="item'+(it.s?" s-"+it.s:"")+'" id="it_'+key+'"><div class="q">'+esc(txt)+'</div>'+
+        '<div class="tri" role="group" aria-label="'+esc(txt)+'">'+
+          '<button type="button" class="ok" data-tri="'+key+'" data-val="ok" aria-pressed="'+(it.s==="ok")+'">Conforms</button>'+
+          '<button type="button" class="dv" data-tri="'+key+'" data-val="dev" aria-pressed="'+(it.s==="dev")+'">Deviation</button>'+
+          '<button type="button" class="no" data-tri="'+key+'" data-val="no" aria-pressed="'+(it.s==="no")+'">Not observed</button>'+
+        '</div>'+
+        '<div class="note"><input id="n_'+key+'" data-bind="'+b+'.n" value="'+esc(it.n||"")+'" placeholder="What you saw, with numbers" aria-label="Note"></div>'+
+        (it.s==="dev" ? '<div class="devbox"><div class="dh">Deviation record</div>'+devFields(b+".dev", it.dev||{}, false)+'</div>' : "")+
+      '</div>';
+    }).join("");
+    var cnt = '<span class="cnt">'+done+"/"+sec.items.length+(devs?' · <span style="color:var(--dev)">'+devs+' dev</span>':'')+'</span>';
+    h += card("sec-"+sec.id, sec.title, "", body, cnt);
+  });
+
+  h += card("sec-qty","Quantities, deliveries and testing","Report §5",
+    '<div class="body">'+
+      field("Installed today, with running quantity","qty.installed",{area:true, ph:"1st layer polyiso: 42 boards today, about 1,300 sq ft to date"})+
+      field("Materials delivered, storage and protection","qty.delivered",{area:true, ph:"2 pallets TPO, stored on dunnage, tarped"})+
+      field("Testing observed and results","qty.testing",{area:true, ph:"Seam probe, test welds, pull tests, cores. None observed."})+
+    '</div>');
+
+  var ed = S.extraDevs.map(function(d,i){
+    return '<div class="entry devent"><div class="eh"><b>Deviation or unforeseen condition '+(i+1)+'</b><button type="button" class="x" data-del="extraDevs.'+i+'">Remove</button></div>'+devFields("extraDevs."+i, d, true)+'</div>';
+  }).join("");
+  h += card("sec-dev","Other deviations and unforeseen conditions","Report §6",
+    '<p class="hint">Anything that does not fit a checklist line: hidden damage, wet deck, a substitution, a condition that stops work. Quantify it.</p>'+
+    '<div class="body">'+ed+'<button type="button" class="add" data-add="extraDevs">Add deviation or condition</button></div>');
+
+  var cm = S.comms.map(function(c,i){
+    return '<div class="entry"><div class="eh"><b>'+(c.da?"Design authority contact":"Conversation "+(i+1))+'</b><button type="button" class="x" data-del="comms.'+i+'">Remove</button></div>'+
+      '<div class="grid2">'+field("Time","comms."+i+".time",{type:"time", now:true})+field("With (name, company)","comms."+i+".who",{ph:"Name, role"})+'</div>'+
+      field("What was asked","comms."+i+".asked",{ph:"Clarity on the insulation assembly"})+
+      field("What was communicated","comms."+i+".said",{area:true, ph:"The scope requirement, 2 layers 2.6\" polyiso plus coverboard, was confirmed."})+
+      '<label class="check"><input type="checkbox" data-check="comms.'+i+'.da"'+(c.da?" checked":"")+'><span>This was contact with the design authority</span></label>'+
+    '</div>';
+  }).join("");
+  h += card("sec-comm","Communications","Report §7",
+    '<p class="hint">Record what was communicated and to whom. Write it as information passed on, not as an instruction you gave.</p>'+
+    '<div class="body">'+cm+'<button type="button" class="add" data-add="comms">Add conversation</button></div>');
+
+  var oi = S.carried.map(function(c,i){
+    return '<div class="entry '+(c.status==="closed"?"closed":"open")+'"><div class="eh"><b>'+esc(c.id||"Item")+'</b><button type="button" class="x" data-del="carried.'+i+'">Remove</button></div>'+
+      field("Item","carried."+i+".title",{})+
+      field("Originated","carried."+i+".origin",{ph:"Report 002, 09/22"})+
+      '<div class="f"><label>Today</label>'+seg("carried."+i+".status",["open","closed"]).replace(/>open</,">Still open<").replace(/>closed</,">Closed today<")+'</div>'+
+      field(c.status==="closed"?"What resolved it":"Status today","carried."+i+".note",{ph:c.status==="closed"?"Plates installed at pattern, photo 12":"Not observed, waiting on electrician"})+
+    '</div>';
+  }).join("");
+  h += card("sec-open","Open items from prior reports","Report §8",
+    '<p class="hint">Starting the next report on this project carries every open item and every deviation from this one here automatically.</p>'+
+    '<div class="body">'+(oi||'<p class="empty">No open items carried in.</p>')+'<button type="button" class="add" data-add="carried">Add open item</button></div>');
+
+  h += card("sec-close","Photos and sign-off","Report §9, §10",
+    '<div class="body" style="gap:0">'+FINAL_CHECKS.map(function(c){
+      return '<label class="check"><input type="checkbox" data-check="checks.'+c[0]+'"'+(S.checks[c[0]]?" checked":"")+'><span>'+esc(c[1])+'</span></label>';
+    }).join("")+'</div>');
+
+  h += '<p class="foot">'+esc(OBSERVER)+' · AssetRoof</p>';
+  document.getElementById("app").innerHTML = h;
+  renderChrome();
+}
+
+function devCount(){ var n=0; Object.keys(S.items).forEach(function(k){ if(S.items[k].s==="dev") n++; }); return n+S.extraDevs.length; }
+function renderChrome(){
+  var m=S.meta;
+  document.getElementById("hTitle").textContent = m.project || "RRO Daily Observation";
+  document.getElementById("hSub").textContent = "Report "+(m.reportNo||"-")+" · "+(fmtDate(m.date)||"no date")+(devCount()?" · "+devCount()+" deviation"+(devCount()>1?"s":""):"");
+  var total=0, done=0; CHECK_SECTIONS.forEach(function(s){ s.items.forEach(function(_,i){ total++; if((S.items[s.id+"_"+i]||{}).s) done++; }); });
+  document.getElementById("progFill").style.width = Math.round(done/total*100)+"%";
+  var chips = [["sec-id","ID"],["sec-crew","Crew"],["sec-wx","Weather"],["sec-scope","Scope"]]
+    .concat(CHECK_SECTIONS.map(function(s){ return ["sec-"+s.id, s.title.split(/,| and /)[0]]; }))
+    .concat([["sec-qty","Quantities"],["sec-dev","Deviations"],["sec-comm","Comms"],["sec-open","Open items"],["sec-close","Sign-off"]]);
+  document.getElementById("chips").innerHTML = chips.map(function(c){
+    var hot = c[0]==="sec-dev" && devCount();
+    return '<a href="#'+c[0]+'" data-jump="'+c[0]+'"'+(hot?' class="dev"':'')+'>'+esc(c[1])+(hot?" "+devCount():"")+'</a>';
+  }).join("");
+  var g = gaps().filter(function(x){ return x.hard; }).length;
+  var b = document.getElementById("btnGaps");
+  b.textContent = g ? g+" gaps" : "No gaps";
+  b.className = "gap"+(g?"":" clear");
+}
+
+/* ---------------------------------------------------------------- events */
+var app = document.getElementById("app");
+app.addEventListener("input", function(e){
+  var el=e.target, b=el.getAttribute("data-bind"); if(!b) return;
+  setP(S,b,el.value); touch();
+  if(/^meta\.(project|reportNo|date)$/.test(b)) renderChrome();
+});
+app.addEventListener("change", function(e){
+  var el=e.target, c=el.getAttribute("data-check");
+  if(c){ setP(S,c,el.checked); touch(); if(/^comms/.test(c)) renderAll(); else renderChrome(); return; }
+  var b=el.getAttribute("data-bind"); if(b && el.tagName==="SELECT"){ setP(S,b,el.value); touch(); }
+});
+app.addEventListener("click", function(e){
+  var t=e.target.closest("button"); if(!t) return;
+  if(t.dataset.tri){
+    var key=t.dataset.tri, it=S.items[key]||{n:""};
+    it.s = it.s===t.dataset.val ? "" : t.dataset.val;
+    if(it.s==="dev" && !it.dev) it.dev={loc:"",against:"",ref:"",who:"",when:"",status:"open"};
+    S.items[key]=it; touch(); keepPlace("it_"+key, renderAll);
+    if(it.s==="dev"){ var f=document.getElementById("f_items_"+key+"_dev_loc"); if(f) f.focus({preventScroll:true}); }
+    return;
+  }
+  if(t.dataset.seg){ var cur=getP(S,t.dataset.seg); setP(S,t.dataset.seg, cur===t.dataset.val?"":t.dataset.val); touch(); keepPlace(null, renderAll); return; }
+  if(t.dataset.now){ setP(S,t.dataset.now,nowHM()); touch(); var inp=document.getElementById("f_"+t.dataset.now.replace(/\./g,"_")); if(inp) inp.value=getP(S,t.dataset.now); return; }
+  if(t.dataset.add){
+    var k=t.dataset.add;
+    if(k==="extraDevs") S.extraDevs.push({title:"",loc:"",against:"",ref:"",who:"",when:"",status:"open"});
+    if(k==="comms") S.comms.push({time:nowHM(),who:"",asked:"",said:"",da:false});
+    if(k==="carried"){ var mx=S.carried.reduce(function(a,c){ var n=parseInt(String(c.id).replace(/\D/g,""),10); return isNaN(n)?a:Math.max(a,n); }, S.oiSeq||0);
+      S.oiSeq=mx+1; S.carried.push({id:"OI-"+(mx+1),title:"",origin:"",status:"open",note:""}); }
+    touch(); keepPlace(null, renderAll); return;
+  }
+  if(t.dataset.del){ var p=t.dataset.del.split("."); S[p[0]].splice(+p[1],1); touch(); keepPlace(null, renderAll); return; }
+});
+function keepPlace(anchorId, fn){
+  var y = window.scrollY, a = anchorId && document.getElementById(anchorId), off = a ? a.getBoundingClientRect().top : null;
+  fn();
+  var b = anchorId && document.getElementById(anchorId);
+  if(b && off!=null) window.scrollTo(0, window.scrollY + b.getBoundingClientRect().top - off); else window.scrollTo(0,y);
+}
+document.getElementById("chips").addEventListener("click", function(e){
+  var a=e.target.closest("a[data-jump]"); if(!a) return; e.preventDefault();
+  var s=document.getElementById(a.dataset.jump); if(s) s.scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* ------------------------------------------------------- gaps and report */
+function gaps(){
+  var m=S.meta, w=S.wx, G=[];
+  function hard(ok,msg){ if(!ok) G.push({hard:true,msg:msg}); }
+  function soft(ok,msg){ if(!ok) G.push({hard:false,msg:msg}); }
+  hard(m.project,"Project name"); hard(m.reportNo,"Report number"); hard(m.date,"Date of inspection");
+  hard(m.arrive,"Arrival time"); hard(m.depart,"Departure time");
+  hard(m.preparedFor||m.preparedType,"Prepared for"); hard(m.contractor,"Roofing contractor"); hard(m.crewCount,"Crew count");
+  hard(w.stop,"Weather stoppage: yes or no");
+  if(w.stop==="Yes") hard(w.stopMin,"Stoppage duration");
+  soft(w.temp||w.rh||w.wind,"Weather readings (will be filled from weather data)");
+  hard(S.scope.area,"Roof area worked today");
+  Object.keys(S.items).forEach(function(k){
+    var it=S.items[k]; if(it.s!=="dev") return; var d=it.dev||{}, lab=itemLabel(k);
+    hard(d.loc,"Deviation location: "+lab); hard(d.against,"Deviation measured against: "+lab);
+    hard(d.who && d.when,"Who was notified and when: "+lab);
+  });
+  S.extraDevs.forEach(function(d,i){
+    var lab=d.title||("condition "+(i+1));
+    hard(d.title,"Describe deviation or condition "+(i+1)); hard(d.loc,"Location: "+lab);
+    hard(d.against,"Measured against: "+lab); hard(d.who && d.when,"Who was notified and when: "+lab);
+  });
+  S.carried.forEach(function(c){ hard(c.note || c.status==="closed" && c.note,"Status today for "+(c.id||"open item")+(c.title?": "+c.title:"")); });
+  var none=0; CHECK_SECTIONS.forEach(function(s){ s.items.forEach(function(_,i){ if(!(S.items[s.id+"_"+i]||{}).s) none++; }); });
+  soft(!none, none+" checklist lines not marked (they report as not observed)");
+  FINAL_CHECKS.forEach(function(c){ soft(S.checks[c[0]], c[1]); });
+  return G;
+}
+function devText(n, title, d){
+  var L=[];
+  L.push(n+". "+title);
+  L.push("   Observed: "+title);
+  L.push("   Location: "+(d.loc||"[CHECK: location]"));
+  L.push("   Measured against: "+((d.against||"[CHECK: document]")+(d.ref?", "+d.ref:"")));
+  L.push("   Notified: "+(d.who? d.who+(d.when?", "+fmtTime(d.when):" [CHECK: time]") : "[CHECK: who was notified and when]"));
+  L.push("   Status: "+(d.status==="corrected"?"Corrected on site":"Open"));
+  return L.join("\n");
+}
+function buildReport(){
+  var m=S.meta, w=S.wx, L=[], i;
+  function hdr(t){ L.push(""); L.push(t.toUpperCase()); L.push(t.replace(/./g,"-")); }
+  L.push("RRO DAILY OBSERVATION: FIELD RECORD");
+  L.push("Project:          "+(m.project||"[CHECK]"));
+  if(m.address) L.push("Address:          "+m.address);
+  L.push("Report no.:       "+(m.reportNo||"[CHECK]"));
+  L.push("Date:             "+(fmtDate(m.date)||"[CHECK]"));
+  L.push("Time on site:     "+(m.arrive?fmtTime(m.arrive):"[CHECK]")+" to "+(m.depart?fmtTime(m.depart):"[CHECK]"));
+  L.push("Observed by:      "+OBSERVER);
+  L.push("Prepared for:     "+[m.preparedType,m.preparedFor].filter(Boolean).join(": "));
+  if(m.distribution) L.push("Distribution:     "+m.distribution);
+  if(m.designAuthority) L.push("Design authority: "+m.designAuthority);
+
+  hdr("Weather");
+  var wx=[]; if(w.temp) wx.push(w.temp+"°F"); if(w.rh) wx.push(w.rh+"% RH"); if(w.wind) wx.push("wind "+w.wind+" mph"+(w.windDir?" from "+w.windDir:"")); if(w.sky) wx.push(w.sky.toLowerCase());
+  L.push(wx.length? wx.join(", ") : "Not recorded on site. Fill from weather data.");
+  L.push("Precipitation on site: "+(w.precip||"not recorded"));
+  L.push("Weather-related stoppage: "+(w.stop==="Yes" ? "Yes, "+(w.stopMin||"?")+" min"+(w.stopWhy?", "+w.stopWhy:"") : (w.stop==="No"?"None":"not recorded")));
+
+  hdr("Crew and site");
+  L.push("Contractor: "+(m.contractor||"[CHECK]")+(m.crewChief?", crew chief "+m.crewChief:"")+(m.crewCount?", crew of "+m.crewCount:""));
+  if(m.trades) L.push("Other trades: "+m.trades);
+  if(m.visitors) L.push("Visitors: "+m.visitors);
+  if(m.equipment) L.push("Equipment: "+m.equipment);
+
+  hdr("Scope");
+  if(S.scope.assembly) L.push("Assembly: "+S.scope.assembly);
+  L.push("Area worked: "+(S.scope.area||"[CHECK]"));
+
+  hdr("Work observed");
+  CHECK_SECTIONS.forEach(function(sec){
+    var lines=[];
+    sec.items.forEach(function(txt,i){
+      var it=S.items[sec.id+"_"+i]; if(!it||!it.s||it.s==="no") return;
+      lines.push("  "+(it.s==="ok"?"[conforms] ":"[DEVIATION] ")+txt+(it.n?": "+it.n:""));
+    });
+    if(lines.length){ L.push(sec.title+":"); L.push(lines.join("\n")); }
+  });
+  if(S.qty.installed) L.push("Installed / running quantity: "+S.qty.installed);
+  if(S.qty.delivered) L.push("Delivered, storage, protection: "+S.qty.delivered);
+  L.push("Testing observed: "+(S.qty.testing||"None recorded"));
+
+  hdr("Deviations and nonconforming work");
+  var n=0;
+  Object.keys(S.items).forEach(function(k){ var it=S.items[k]; if(it.s!=="dev") return; n++; L.push(devText(n, itemLabel(k)+(it.n?": "+it.n:""), it.dev||{})); });
+  S.extraDevs.forEach(function(d){ n++; L.push(devText(n, d.title||"[CHECK: describe]", d)); });
+  if(!n) L.push("None observed. Work observed conformed to the documents.");
+
+  hdr("Communications");
+  if(!S.comms.length) L.push("None recorded.");
+  S.comms.forEach(function(c){
+    L.push("- "+(c.time?fmtTime(c.time)+", ":"")+(c.who||"[CHECK: who]")+(c.da?" (DESIGN AUTHORITY)":"")+
+      (c.asked?". Asked: "+c.asked:"")+(c.said?". Communicated: "+c.said:""));
+  });
+
+  hdr("Open items");
+  if(!S.carried.length) L.push("None carried from prior reports.");
+  S.carried.forEach(function(c){
+    L.push("- "+(c.id?c.id+" ":"")+(c.title||"[CHECK]")+" | Originated: "+(c.origin||"[CHECK]")+" | "+(c.status==="closed"?"CLOSED "+fmtDate(m.date)+": "+(c.note||"[CHECK: what resolved it]"):"Open"+(c.note?": "+c.note:"")));
+  });
+  if(n) L.push("New this report: the "+n+" deviation"+(n>1?"s":"")+" above.");
+
+  hdr("Photos and sign-off");
+  FINAL_CHECKS.forEach(function(c){ L.push("  ["+(S.checks[c[0]]?"x":" ")+"] "+c[1]); });
+  L.push("");
+  L.push("Photos: CompanyCam, tag Inspection. Written "+new Date().toLocaleString());
+  return L.join("\n");
+}
+
+/* ---------------------------------------------------------------- sheets */
+function openSheet(title, body, acts){
+  var host=document.getElementById("sheetHost");
+  host.innerHTML='<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(title)+'">'+
+    '<div class="sh"><h3>'+esc(title)+'</h3><button type="button" class="x" id="shClose">Close</button></div>'+
+    '<div class="sb">'+body+'</div>'+(acts?'<div class="acts">'+acts+'</div>':'')+'</div></div>';
+  document.getElementById("shClose").onclick=closeSheet;
+  document.getElementById("scrim").onclick=function(e){ if(e.target.id==="scrim") closeSheet(); };
+}
+function closeSheet(){ document.getElementById("sheetHost").innerHTML=""; }
+var toastT;
+function toast(msg){ var h=document.getElementById("toastHost"); h.innerHTML='<div class="toast" role="status">'+esc(msg)+'</div>'; clearTimeout(toastT); toastT=setTimeout(function(){ h.innerHTML=""; },1600); }
+
+function gapList(){
+  var G=gaps();
+  if(!G.length) return '<ul class="gaps"><li class="ok">Everything the report needs is captured.</li></ul>';
+  return '<ul class="gaps">'+G.map(function(g){ return '<li class="'+(g.hard?"":"soft")+'">'+esc(g.msg)+'</li>'; }).join("")+'</ul>';
+}
+document.getElementById("btnGaps").onclick=function(){
+  openSheet("Gaps before the report", '<p class="empty">Yellow items are needed for the report. Grey items are reminders.</p>'+gapList());
+};
+document.getElementById("btnReport").onclick=function(){
+  var G=gaps().filter(function(g){return g.hard;}).length;
+  openSheet("Report text",
+    (G?'<p class="empty" style="color:var(--warn-ink)">'+G+' gaps still open. They show as [CHECK] in the text.</p>':'')+
+    '<textarea id="repText" readonly aria-label="Report text">'+esc(buildReport())+'</textarea>'+
+    '<p class="empty">Share sends a text copy and a data file. Save both to the project folder in Google Drive and Claude can build the Word report from them.</p>',
+    '<button type="button" id="btnCopy">Copy text</button><button type="button" class="primary" id="btnShare">Share</button>');
+  document.getElementById("btnCopy").onclick=function(){
+    var ta=document.getElementById("repText"), btn=this;
+    function done(){ btn.textContent="Copied"; setTimeout(function(){ btn.textContent="Copy text"; },1400); }
+    function fallback(){ ta.removeAttribute("readonly"); ta.focus(); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){ btn.textContent="Select and copy"; } ta.setAttribute("readonly","readonly"); }
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, fallback); else fallback();
+  };
+  document.getElementById("btnShare").onclick=function(){
+    shareInspection().then(function(r){ if(r==="saved") toast("Saved to Downloads"); });
+  };
+};
+document.getElementById("btnHist").onclick=function(){
+  var list = allInspections(), m=S.meta, next=pad3((parseInt(m.reportNo,10)||0)+1);
+  var body = '<div class="newbox">'+
+    (m.project ? '<p>Start report '+esc(next)+' for '+esc(m.project)+'. Project details and every open item carry over.</p><button type="button" class="primary" id="newSame">Start report '+esc(next)+'</button>' : '')+
+    '<button type="button" id="newBlank">Start a different project</button></div>'+
+    '<div class="hist">'+list.map(function(x){
+      var xm=x.meta||{}; return '<button type="button" data-open="'+esc(x.id)+'" class="'+(x.id===S.id?"cur":"")+'"><b>'+esc(xm.project||"Untitled")+' · Report '+esc(xm.reportNo||"-")+'</b><small>'+esc(fmtDate(xm.date)||"no date")+(x.id===S.id?" · open now":"")+'</small></button>';
+    }).join("")+'</div>'+
+    '<div class="newbox"><p>Back up every inspection to Google Drive, or restore them on a new phone.</p>'+
+      '<button type="button" id="btnBackup">Back up all inspections</button>'+
+      '<button type="button" id="btnRestore">Restore from a backup file</button>'+
+      '<input type="file" id="restoreFile" accept=".json,application/json" hidden>'+
+      '<button type="button" id="btnDelete">Delete the open inspection</button>'+
+      '<div id="delConfirm" hidden><p>Delete report '+esc(m.reportNo||"")+' for '+esc(m.project||"this project")+' from this phone? Back it up first if you need it.</p>'+
+      '<button type="button" class="primary" id="btnDeleteYes" style="background:var(--dev);border-color:var(--dev)">Delete it</button></div>'+
+    '</div>';
+  openSheet("Inspections", body);
+  var byId={}; list.forEach(function(x){ byId[x.id]=x; });
+  var ns=document.getElementById("newSame"); if(ns) ns.onclick=function(){ S=nextFrom(S); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("Report "+S.meta.reportNo+" started"); };
+  document.getElementById("newBlank").onclick=function(){ S=blank(); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("New inspection started"); };
+  document.querySelectorAll("[data-open]").forEach(function(b){ b.onclick=function(){ var x=byId[b.dataset.open]; if(!x) return; S=clone(x); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); }; });
+  document.getElementById("btnBackup").onclick=function(){ backupAll().then(function(r){ if(r==="saved") toast("Backup saved to Downloads"); }); };
+  var rf=document.getElementById("restoreFile");
+  document.getElementById("btnRestore").onclick=function(){ rf.click(); };
+  rf.onchange=function(){ if(!rf.files[0]) return; restoreFrom(rf.files[0]).then(function(msg){ closeSheet(); toast("Restored: "+msg); }, function(e){ toast("That file could not be read. "+(e.message||"")); }); };
+  document.getElementById("btnDelete").onclick=function(){ document.getElementById("delConfirm").hidden=false; this.hidden=true; };
+  document.getElementById("btnDeleteYes").onclick=function(){ deleteInspection(S.id); closeSheet(); toast("Inspection deleted"); };
+};
+
+/* ------------------------------------------------------------------ boot */
+S = loadLocal() || blank();
+renderAll();
+setSync();
+if("serviceWorker" in navigator && location.protocol!=="file:"){
+  navigator.serviceWorker.register("sw.js").then(function(reg){
+    reg.addEventListener("updatefound", function(){
+      var w=reg.installing; if(!w) return;
+      w.addEventListener("statechange", function(){ if(w.state==="installed" && navigator.serviceWorker.controller) toast("Update ready. Close and reopen the app."); });
+    });
+  }).catch(function(){});
+}
+</script>
+</body>
+</html>
