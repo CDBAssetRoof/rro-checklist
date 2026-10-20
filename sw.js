@@ -1,7 +1,7 @@
 /* RRO Observation Checklist service worker.
    Caches the whole app on first open so it runs with no signal.
    When you change any file, bump VERSION so phones pick up the new copy. */
-var VERSION = "rro-v3";
+var VERSION = "rro-v4";
 var FILES = [
   "./",
   "index.html",
