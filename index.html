@@ -304,7 +304,6 @@ var ENV_SECTIONS = [
    "Material storage and protection against manufacturer limits (temperature, UV, moisture)",
    "Installer qualification on site (ABAA card or manufacturer certification) and crew size",
    "Air and surface temperature, RH and dew point against product limits",
-   "Mock-up built, tested and accepted (record date and reference) [NIBS GL3, ASTM E2813]",
    "Contractor QC records current: thickness, adhesion, daily logs",
    "Areas observed: elevation, level, grid lines, percent complete"
   ]
@@ -316,7 +315,6 @@ var ENV_SECTIONS = [
   "items": [
    "Substrate type and condition: sound, clean, no laitance, oil, curing compound or release agent [ASTM D4258]",
    "Concrete cure age against the manufacturer minimum (record days)",
-   "Concrete moisture: method and readings [ASTM F2170, F1869, D4263]",
    "Surface profile where specified (record ICRI CSP) [ASTM D4259]",
    "Bugholes, honeycombing, fins, form ties and voids filled or ground before membrane",
    "Cracks, cold joints and sheathing joints pre-treated (record widths)",
@@ -397,6 +395,24 @@ var ENV_SECTIONS = [
   ]
  },
  {
+  "id": "emas",
+  "chip": "Masonry",
+  "title": "Repointing and brick repair",
+  "items": [
+   "Joints raked to a uniform depth, about 2 to 2-1/2 times the joint width, square at the back (record depth and width) [NPS Preservation Brief 2]",
+   "Raking method allowed by the spec; no chipped or widened brick edges",
+   "Raked joints cleaned of dust and loose mortar and dampened before pointing per spec",
+   "Mortar type, mix, color and sand against the spec and the approved mortar sample; not harder than the brick",
+   "Mortar placed in layers no deeper than about 1/4 in., each firm before the next",
+   "Joint tooling profile matches the existing joints",
+   "Damaged brick replaced: count and location; replacement matches size, color and texture",
+   "Replacement brick fully bedded, head and bed joints filled; ties reset or added where specified",
+   "Cracked, spalled or displaced brick recorded (location, crack length and width)",
+   "Curing and weather protection per spec; temperature limits for mortar work",
+   "Cleaning method and mortar smears; weeps, flashing and sealant joints left clear"
+  ]
+ },
+ {
   "id": "eseal",
   "chip": "Sealants",
   "title": "Sealant joints",
@@ -422,75 +438,7 @@ var ENV_SECTIONS = [
    "Clearance from grade, pavers or soil to cladding and flashing",
    "Penetrations at transitions (MEP, rail posts, anchors) sealed per detail"
   ]
- },
- {
-  "id": "eqa",
-  "chip": "QA records",
-  "title": "Test plan and QA records",
-  "items": [
-   "Test plan: tests, locations, frequency, criteria, who tests and who witnesses [NIBS GL3]",
-   "Failures logged with cause, repair and retest",
-   "Gauge and tester IDs and calibration",
-   "Contractor QC records cross-checked against what was observed",
-   "Work covered since the last visit (record what could not be seen)"
-  ]
  }
-];
-var ENV_TESTS = [
- [
-  "ASTM E1105 water penetration, windows and curtain wall"
- ],
- [
-  "AAMA 501.2 hose test, storefront and curtain wall"
- ],
- [
-  "AAMA 502 / 503 field test, windows and curtain wall"
- ],
- [
-  "ASTM E783 air leakage, windows and doors"
- ],
- [
-  "ASTM C1601 water penetration, masonry wall surface"
- ],
- [
-  "ASTM E1186 air leakage site detection"
- ],
- [
-  "ASTM E779 whole-building air leakage"
- ],
- [
-  "ASTM E3158 large-building air leakage"
- ],
- [
-  "ABAA T0002 pull-off adhesion, air barrier"
- ],
- [
-  "ASTM D4541 / D7234 pull-off adhesion"
- ],
- [
-  "ASTM C1521 sealant adhesion"
- ],
- [
-  "ASTM D5957 flood test"
- ],
- [
-  "ASTM D7877 electronic leak detection"
- ],
- [
-  "ASTM F2170 concrete RH probe"
- ],
- [
-  "ASTM F1869 calcium chloride moisture"
- ],
- [
-  "ASTM D4263 plastic sheet moisture"
- ],
- [
-  "Wet-film or caliper thickness readings"
- ],
- [
-  "Other (name it under What was observed)"
- ]
 ];
 var ALL_SECTIONS = CHECK_SECTIONS.concat(ENV_SECTIONS);
 var AGAINST = ["Scope of work","Detail / drawing","Manufacturer requirement","NRCA / accepted practice","Industry standard (ASTM, AAMA, ABAA)","Other"];
@@ -501,8 +449,7 @@ var FINAL_CHECKS = [
   ["cc_map","Aerial, roof plan or elevation marked with today's work area"],
   ["rb_notify","Every deviation names who was notified and when"],
   ["rb_direct","Answers given on site recorded as communicated, not as direction"],
-  ["rb_verdict","Notes state facts and numbers, no opinion of the crew"],
-  ["rb_due","Report due to the contractor before work starts tomorrow"]
+  ["rb_verdict","Notes state facts and numbers, no opinion of the crew"]
 ];
 var OBSERVER = "Chad Board, RRO #2823";
 var LS_KEY = "rro_checklist_v1";
@@ -523,6 +470,21 @@ function itemLabel(key){ var p=key.split("_"); var s=ALL_SECTIONS.filter(functio
 function itemTitle(key){ return itemLabel(key).replace(/\s*\[[^\]]*\]\s*$/,""); }
 function secTitle(key){ var p=key.split("_"); var s=ALL_SECTIONS.filter(function(x){return x.id===p[0];})[0]; return s? s.title : ""; }
 
+/* Enclosure checklist v2 (2026-10-29) removed one line from Pre-installation (index 5) and one
+   from Substrate (index 2), and dropped the QA records section. Shift saved answers to match. */
+function migrate(x){
+  if(!x || x.envV>=2) return x;
+  var it=x.items||{}, out={};
+  Object.keys(it).forEach(function(k){
+    var p=k.split("_"), id=p[0], n=+p[1];
+    if(id==="eqa") return;
+    if(id==="epre"){ if(n===5) return; if(n>5) n--; }
+    if(id==="esub"){ if(n===2) return; if(n>2) n--; }
+    out[id+"_"+n]=it[k];
+  });
+  x.items=out; x.envV=2; return x;
+}
+
 /* Which scopes this report covers. Older records have no setting and were roofing only. */
 function discOf(x){ var d=(x||S).disc||{}; return { roof: d.roof===undefined ? true : !!d.roof, env: !!d.env }; }
 function activeSections(){ var d=discOf(); return (d.roof?CHECK_SECTIONS:[]).concat(d.env?ENV_SECTIONS:[]); }
@@ -542,7 +504,7 @@ function blank(){
     scope:{ assembly:"", area:"" },
     items:{},
     qty:{ installed:"", delivered:"", testing:"" },
-    disc:{ roof:true, env:false }, envTests:[],
+    disc:{ roof:true, env:false }, envV:2,
     extraDevs:[], comms:[], carried:[], checks:{}
   };
 }
@@ -581,10 +543,10 @@ function lsWrite(){
   all.all = all.all||{}; all.all[S.id]=S; all.current=S.id;
   lsWriteAll(all);
 }
-function loadLocal(){ var a=lsRead(); if(a && a.all && a.current && a.all[a.current]) return a.all[a.current]; return null; }
+function loadLocal(){ var a=lsRead(); if(a && a.all && a.current && a.all[a.current]) return migrate(a.all[a.current]); return null; }
 function allInspections(){
   var a=lsRead(); if(!a||!a.all) return S?[S]:[];
-  return Object.keys(a.all).map(function(k){ return a.all[k]; }).sort(function(x,y){ return (y.updated||0)-(x.updated||0); });
+  return Object.keys(a.all).map(function(k){ return migrate(a.all[k]); }).sort(function(x,y){ return (y.updated||0)-(x.updated||0); });
 }
 function setSync(){
   var el=document.getElementById("sync");
@@ -633,7 +595,7 @@ function restoreFrom(file){
     var all=lsRead()||{all:{}}; all.all=all.all||{}; var added=0, newer=0;
     list.forEach(function(x){
       if(!x || !x.id || !x.meta) return;
-      var cur=all.all[x.id];
+      migrate(x); var cur=all.all[x.id];
       if(!cur){ all.all[x.id]=x; added++; }
       else if((x.updated||0) > (cur.updated||0)){ all.all[x.id]=x; newer++; }
     });
@@ -793,7 +755,7 @@ function renderAll(){
     '<p class="hint">Check what this report covers. Each checked scope adds its own checklist sections.</p>'+
     '<div class="body" style="gap:0">'+
       '<label class="check"><input type="checkbox" data-disc="roof"'+(dsc.roof?" checked":"")+'><span><b>Roofing</b><br><small>Tear-off, insulation, membrane, flashing, edges, penetrations, drainage</small></span></label>'+
-      '<label class="check"><input type="checkbox" data-disc="env"'+(dsc.env?" checked":"")+'><span><b>Building enclosure and waterproofing</b><br><small>Below-grade and plaza waterproofing, air and water barriers, openings, cladding flashings, sealant joints, field tests</small></span></label>'+
+      '<label class="check"><input type="checkbox" data-disc="env"'+(dsc.env?" checked":"")+'><span><b>Building enclosure and waterproofing</b><br><small>Below-grade and plaza waterproofing, air and water barriers, openings, cladding flashings, repointing and brick repair, sealant joints</small></span></label>'+
     '</div>');
 
   h += card("sec-crew","Crew, trades and equipment","Report §5",
@@ -848,19 +810,6 @@ function renderAll(){
     h += card("sec-"+sec.id, sec.title, "", (sec.hint?'<p class="hint">'+esc(sec.hint)+'</p>':"")+body, cnt);
   });
 
-  if(dsc.env){
-    var et = (S.envTests||[]).map(function(t,i){
-      return '<div class="entry"><div class="eh"><b>Field test '+(i+1)+'</b><button type="button" class="x" data-del="envTests.'+i+'">Remove</button></div>'+
-        field("Test","envTests."+i+".test",{select:ENV_TESTS.map(function(x){return x[0];})})+
-        '<div class="grid2">'+field("Location","envTests."+i+".loc",{ph:"Window W-12, level 2"})+field("Run by (name, company)","envTests."+i+".by",{ph:"Name, testing agency"})+'</div>'+
-        field("Criteria from the spec","envTests."+i+".crit",{ph:"No uncontrolled water at 15 min, 12 gal/hr/sq ft"})+
-        field("What was observed","envTests."+i+".result",{area:true, ph:"Water at interior sill corner at 9 min. Readings, durations, pressures."})+
-      '</div>';
-    }).join("");
-    h += card("sec-etests","Enclosure field tests","Report §5",
-      '<p class="hint">Record what the test showed against the criteria in the spec. The testing agency or design authority rates the result; the report records it.</p>'+
-      '<div class="body">'+et+'<button type="button" class="add" data-add="envTests">Add field test</button></div>');
-  }
 
   h += card("sec-qty","Quantities, deliveries and testing","Report §5",
     '<div class="body">'+
@@ -919,7 +868,6 @@ function renderChrome(){
   document.getElementById("progFill").style.width = (total?Math.round(done/total*100):0)+"%";
   var chips = [["sec-id","ID"],["sec-scopepick","Scope"],["sec-crew","Crew"],["sec-wx","Weather"],["sec-scope","Area"]]
     .concat(activeSections().map(function(s){ return ["sec-"+s.id, s.chip || s.title.split(/,| and /)[0]]; }))
-    .concat(discOf().env?[["sec-etests","Tests"]]:[])
     .concat([["sec-qty","Quantities"],["sec-dev","Deviations"],["sec-comm","Comms"],["sec-open","Open items"],["sec-close","Sign-off"]]);
   document.getElementById("chips").innerHTML = chips.map(function(c){
     var hot = c[0]==="sec-dev" && devCount();
@@ -945,7 +893,7 @@ app.addEventListener("change", function(e){
   if(dk){
     var d=discOf(); d[dk]=el.checked;
     if(!d.roof && !d.env){ el.checked=true; toast("Keep at least one scope checked"); return; }
-    S.disc=d; if(!S.envTests) S.envTests=[]; touch(); keepPlace("sec-scopepick", renderAll); return;
+    S.disc=d; touch(); keepPlace("sec-scopepick", renderAll); return;
   }
   var b=el.getAttribute("data-bind"); if(b && el.tagName==="SELECT"){ setP(S,b,el.value); touch(); }
 });
@@ -965,7 +913,6 @@ app.addEventListener("click", function(e){
     var k=t.dataset.add;
     if(k==="extraDevs") S.extraDevs.push({title:"",loc:"",against:"",ref:"",who:"",when:"",status:"open"});
     if(k==="comms") S.comms.push({time:nowHM(),who:"",asked:"",said:"",da:false});
-    if(k==="envTests"){ if(!S.envTests) S.envTests=[]; S.envTests.push({test:"",loc:"",by:"",crit:"",result:""}); }
     if(k==="carried"){ var mx=S.carried.reduce(function(a,c){ var n=parseInt(String(c.id).replace(/\D/g,""),10); return isNaN(n)?a:Math.max(a,n); }, S.oiSeq||0);
       S.oiSeq=mx+1; S.carried.push({id:"OI-"+(mx+1),title:"",origin:"",status:"open",note:""}); }
     touch(); keepPlace(null, renderAll); return;
@@ -1006,10 +953,6 @@ function gaps(){
     hard(d.against,"Measured against: "+lab); hard(d.who && d.when,"Who was notified and when: "+lab);
   });
   S.carried.forEach(function(c){ hard(c.note || c.status==="closed" && c.note,"Status today for "+(c.id||"open item")+(c.title?": "+c.title:"")); });
-  if(discOf().env) (S.envTests||[]).forEach(function(t,i){
-    var lab=t.test||("field test "+(i+1));
-    hard(t.test,"Name the standard for field test "+(i+1)); hard(t.loc,"Test location: "+lab); hard(t.result,"What the test showed: "+lab);
-  });
   var none=0; activeSections().forEach(function(s){ s.items.forEach(function(_,i){ if(!(S.items[s.id+"_"+i]||{}).s) none++; }); });
   soft(!none, none+" checklist lines not marked (they report as not observed)");
   FINAL_CHECKS.forEach(function(c){ soft(S.checks[c[0]], c[1]); });
@@ -1071,13 +1014,6 @@ function buildReport(){
   if(S.qty.installed) L.push("Installed / running quantity: "+S.qty.installed);
   if(S.qty.delivered) L.push("Delivered, storage, protection: "+S.qty.delivered);
   L.push("Testing observed: "+(S.qty.testing||"None recorded"));
-  if(dsc.env){
-    if(!(S.envTests||[]).length) L.push("Enclosure field tests: none observed.");
-    (S.envTests||[]).forEach(function(t,i){
-      L.push("Field test "+(i+1)+": "+(t.test||"[CHECK: standard]")+" | Location: "+(t.loc||"[CHECK]")+(t.by?" | Run by: "+t.by:"")+
-        (t.crit?" | Criteria: "+t.crit:"")+" | Observed: "+(t.result||"[CHECK]"));
-    });
-  }
 
   hdr("Deviations and nonconforming work");
   var n=0;
