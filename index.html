@@ -166,6 +166,8 @@ h2.group{font-family:var(--hfont);font-size:13px;font-weight:700;letter-spacing:
 .gaps li.soft{background:var(--no-bg);color:var(--muted)}
 .gaps li.ok{background:var(--green-bg);color:var(--green-ink)}
 .hist{display:grid;gap:8px}
+.pnew{display:block;width:100%;text-align:left;min-height:54px;margin-bottom:10px;padding:10px 12px;border:1px solid var(--navy);border-radius:10px;background:var(--navy);color:var(--navy-ink);font-weight:700;font-size:14.5px;cursor:pointer}
+.pnew small{display:block;font-weight:400;font-size:12.5px;opacity:.85}
 .hist button{text-align:left;min-height:54px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer}
 .hist button.cur{border-color:var(--green);background:var(--green-bg)}
 .hist b{display:block;font-size:14.5px}
@@ -1265,7 +1267,8 @@ document.getElementById("btnHist").onclick=function(){
       var lm=g.items[0].meta||{}, here=g.key===curKey;
       return '<details class="proj'+(here?' cur':'')+'"'+(here?' open':'')+'>'+
         '<summary><span class="pn"><b>'+esc(g.name)+'</b><small>'+plural(g.items.length)+' · latest '+esc(lm.reportNo||"-")+', '+esc(fmtDate(lm.date)||"no date")+(here?' · open now':'')+'</small></span><span class="chev" aria-hidden="true">›</span></summary>'+
-        '<div class="pb"><div class="hist">'+g.items.map(function(x){
+        '<div class="pb">'+(g.key ? '<button type="button" class="pnew" data-pnew="'+gi+'">Start report '+esc(pad3((parseInt(lm.reportNo,10)||0)+1))+'<small>Project details and open items from report '+esc(lm.reportNo||"-")+' carry over</small></button>' : '')+
+        '<div class="hist">'+g.items.map(function(x){
           var xm=x.meta||{};
           return '<button type="button" data-open="'+esc(x.id)+'" class="'+(x.id===S.id?"cur":"")+'"><b>Report '+esc(xm.reportNo||"-")+'</b><small>'+esc(fmtDate(xm.date)||"no date")+(x.id===S.id?" · open now":"")+(x.ghUploaded?" · on GitHub":"")+'</small></button>';
         }).join("")+'</div>'+
@@ -1293,6 +1296,11 @@ document.getElementById("btnHist").onclick=function(){
   rf.onchange=function(){ if(!rf.files[0]) return; restoreFrom(rf.files[0]).then(function(msg){ closeSheet(); toast("Restored: "+msg); }, function(e){ toast("That file could not be read. "+(e.message||"")); }); };
   document.getElementById("btnDelete").onclick=function(){ document.getElementById("delConfirm").hidden=false; this.hidden=true; };
   document.getElementById("btnDeleteYes").onclick=function(){ deleteInspection(S.id); closeSheet(); toast("Inspection deleted"); };
+  document.querySelectorAll("[data-pnew]").forEach(function(b){ b.onclick=function(){
+    var latest=groups[+b.dataset.pnew].items[0];
+    S=nextFrom(migrate(clone(latest))); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0);
+    toast(S.meta.project.trim()+": report "+S.meta.reportNo+" started");
+  }; });
   document.querySelectorAll("[data-pdel]").forEach(function(b){ b.onclick=function(){
     document.getElementById("pconf"+b.dataset.pdel).hidden=false; b.hidden=true;
   }; });
