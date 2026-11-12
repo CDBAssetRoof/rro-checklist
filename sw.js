@@ -1,7 +1,7 @@
 /* RRO Observation Checklist service worker.
    Caches the whole app on first open so it runs with no signal.
    When you change any file, bump VERSION so phones pick up the new copy. */
-var VERSION = "rro-v9";
+var VERSION = "rro-v10";
 var FILES = [
   "./",
   "index.html",
@@ -14,8 +14,13 @@ var FILES = [
   "apple-touch-icon.png"
 ];
 
+/* cache: "reload" skips the phone's ordinary web cache, which GitHub Pages lets hold a file
+   for 10 minutes. Without it a new version could store the old page. skipWaiting lets the new
+   version take over without the app being fully closed first. */
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FILES); }));
+  e.waitUntil(caches.open(VERSION).then(function (c) {
+    return c.addAll(FILES.map(function (f) { return new Request(f, { cache: "reload" }); }));
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener("activate", function (e) {
