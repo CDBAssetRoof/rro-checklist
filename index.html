@@ -596,12 +596,12 @@ function nextFrom(prev){
 }
 
 /* ------------------------------------------------------------- storage */
-/* Everything lives on this phone. Nothing is sent anywhere unless you tap Share, Back up or Upload. */
+/* Everything lives on this phone. Nothing is sent anywhere unless you tap Share or Upload. */
 var S, storeOK=true;
 function lsRead(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){ return null; } }
 function lsWriteAll(all){
   try{ localStorage.setItem(LS_KEY, JSON.stringify(all)); storeOK=true; }
-  catch(e){ storeOK=false; toast("Phone storage is full. Back up and delete old inspections."); }
+  catch(e){ storeOK=false; toast("Phone storage is full. Upload, then delete old projects."); }
   setSync();
 }
 function lsWrite(){
@@ -648,11 +648,6 @@ function shareInspection(){
     /* Android Chrome will not share .json files, so the data file goes out as .txt. Restore reads either. */
     new File([json], name+" data.txt", {type:"text/plain"})
   ], name, txt);
-}
-function backupAll(){
-  var d=new Date(), stamp=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
-  var json=JSON.stringify({app:"rro-checklist", version:1, inspections:allInspections()}, null, 1);
-  return shareFiles([new File([json], "RRO backup "+stamp+".txt", {type:"text/plain"})], "RRO backup "+stamp);
 }
 function restoreFrom(file){
   return file.text().then(function(t){
@@ -1275,9 +1270,8 @@ document.getElementById("btnHist").onclick=function(){
           '<div class="two"><button type="button" data-pkeep="'+gi+'">Keep it</button><button type="button" class="danger" data-pyes="'+gi+'">Delete project</button></div></div>'+
         '</div></details>';
     }).join("") : '<p class="empty">No saved inspections on this phone yet.</p>')+'</div>'+
-    '<div class="newbox"><p>Back up every inspection to Google Drive, or restore them on a new phone.</p>'+
-      '<button type="button" id="btnBackup">Back up all inspections</button>'+
-      '<button type="button" id="btnRestore">Restore from a backup file</button>'+
+    '<div class="newbox"><p>Restore reports onto this phone from a data file, such as the .json files uploaded to GitHub.</p>'+
+      '<button type="button" id="btnRestore">Restore from a data file</button>'+
       '<input type="file" id="restoreFile" accept=".txt,.json,text/plain,application/json" hidden>'+
       '<button type="button" id="btnDelete">Delete the open inspection</button>'+
       '<div id="delConfirm" hidden><p>Delete report '+esc(m.reportNo||"")+' for '+esc(m.project||"this project")+' from this phone? Back it up first if you need it.</p>'+
@@ -1287,7 +1281,6 @@ document.getElementById("btnHist").onclick=function(){
   var byId={}; list.forEach(function(x){ byId[x.id]=x; });
   document.getElementById("newBlank").onclick=function(){ S=blank(); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("New project started"); };
   document.querySelectorAll("[data-open]").forEach(function(b){ b.onclick=function(){ var x=byId[b.dataset.open]; if(!x) return; S=clone(x); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); }; });
-  document.getElementById("btnBackup").onclick=function(){ backupAll().then(function(r){ if(r==="saved") toast("Backup saved to Downloads"); }); };
   var rf=document.getElementById("restoreFile");
   document.getElementById("btnRestore").onclick=function(){ rf.click(); };
   rf.onchange=function(){ if(!rf.files[0]) return; restoreFrom(rf.files[0]).then(function(msg){ closeSheet(); toast("Restored: "+msg); }, function(e){ toast("That file could not be read. "+(e.message||"")); }); };
