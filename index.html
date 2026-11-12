@@ -1179,7 +1179,7 @@ function openGhSettings(){
     return '<div class="f"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" type="'+(secret?"password":"text")+'" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+esc(val||"")+'" placeholder="'+esc(ph)+'"></div>';
   }
   openSheet("GitHub upload",
-    '<p class="empty">Each upload puts the report text and its data file in a folder for the project, like <b>reports/BOK-Autobank/</b>. Uploading the same report again replaces those files.</p>'+
+    '<p class="empty">Each upload puts the report text and its data file in a folder for the project, like <b>reports/Project-Name/</b>. Uploading the same report again replaces those files.</p>'+
     '<div class="grid2">'+
       fld("Owner","gh_owner",c.owner,"Your GitHub username")+
       fld("Repository","gh_repo",c.repo,"rro-reports")+
