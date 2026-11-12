@@ -133,6 +133,14 @@ section.card{background:var(--card);border:1px solid var(--line);border-radius:1
 .check input{flex:0 0 auto;width:26px;height:26px;margin:0;accent-color:var(--green)}
 .check span{font-size:15px}
 .check small{font-size:13px;color:var(--muted)}
+.card.coll > header{cursor:pointer;align-items:center;border-bottom-color:transparent}
+.card.coll.open > header{border-bottom-color:var(--line-2)}
+.card.coll .chev{color:var(--muted);font-size:13px;width:12px;flex:0 0 auto}
+.card.coll:not(.open){margin-bottom:8px}
+.moresec{margin-left:10px}
+.moretog{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;width:100%;text-align:left;min-height:50px;padding:10px 14px;margin:6px 0 10px;border:1.5px dashed var(--line);border-radius:12px;background:transparent;font-family:var(--hfont);font-weight:700;font-size:14px;color:var(--head);cursor:pointer}
+.moretog .chev{color:var(--muted);font-size:13px;width:12px}
+.moretog small{flex-basis:100%;padding-left:20px;font-family:var(--bfont);font-weight:400;font-size:12.5px;color:var(--muted)}
 h2.group{font-family:var(--hfont);font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--head);margin:22px 2px 10px;padding-top:12px;border-top:2px solid var(--green)}
 
 /* bottom bar */
@@ -295,30 +303,72 @@ var CHECK_SECTIONS = [
 /* Building enclosure and waterproofing. Optional: shown when that scope is checked. */
 var ENV_SECTIONS = [
  {
-  "id": "epre",
-  "chip": "Pre-install",
-  "title": "Pre-installation and conditions",
+  "id": "eprod",
+  "chip": "Conditions",
+  "title": "Conditions and products",
   "items": [
-   "Approved submittals, shop drawings and installation instructions on site (record revision and date)",
-   "Products on site match approved submittals: manufacturer, product, lot, shelf-life date",
-   "Material storage and protection against manufacturer limits (temperature, UV, moisture)",
-   "Installer qualification on site (ABAA card or manufacturer certification) and crew size",
-   "Air and surface temperature, RH and dew point against product limits",
-   "Contractor QC records current: thickness, adhesion, daily logs",
-   "Areas observed: elevation, level, grid lines, percent complete"
+   "Products on site match the approved submittal or scope: manufacturer, product, color, batch",
+   "Product data sheets and approved submittals available on site",
+   "Material storage and protection against the product data sheet",
+   "Air and surface temperature, RH and dew point against the product data sheet (record)",
+   "Weather window against cure needs: rain-free time, overnight low"
   ]
  },
  {
-  "id": "esub",
-  "chip": "Substrate",
-  "title": "Substrate and surface preparation",
+  "id": "eprep",
+  "chip": "Prep",
+  "title": "Surface preparation",
   "items": [
-   "Substrate type and condition: sound, clean, no laitance, oil, curing compound or release agent [ASTM D4258]",
-   "Concrete cure age against the manufacturer minimum (record days)",
-   "Surface profile where specified (record ICRI CSP) [ASTM D4259]",
-   "Bugholes, honeycombing, fins, form ties and voids filled or ground before membrane",
-   "Cracks, cold joints and sheathing joints pre-treated (record widths)",
-   "Primer: product, coverage, open time, re-prime limit"
+   "Surface cleaned by the specified method (pressure washing, scraping, wire brush); record method and date",
+   "Loose, deteriorated or failed material removed (old coating, sealant, rotted wood, spalled concrete)",
+   "Rust ground to sound metal and primed per the scope",
+   "Substrate sound, clean and dry before coating or sealant; no laitance, oil or efflorescence",
+   "Surface profile or roughness where the product requires it",
+   "Primer: product and coverage per the data sheet",
+   "Adjacent surfaces, glass, landscaping and vehicles protected"
+  ]
+ },
+ {
+  "id": "erep",
+  "chip": "Repairs",
+  "title": "Concrete and masonry repair",
+  "items": [
+   "Concrete cut back to sound material; repair area and depth (record)",
+   "Patch, curb or pad formed and finished to the specified height and slope",
+   "Voids, bugholes and cracks filled with the specified material (record widths)",
+   "Repair material cure time before coating or sealant (record days)",
+   "Mortar joints raked to a uniform depth, about 2 to 2-1/2 times the joint width (record) [NPS Preservation Brief 2]",
+   "Mortar type and color against the spec and sample; layers no deeper than about 1/4 in.; tooling matches existing",
+   "Damaged brick or block replaced: count, location, match; fully bedded",
+   "Loose cladding (EIFS, panels, trim) reattached per the design authority",
+   "Curing and weather protection for repair materials; temperature limits"
+  ]
+ },
+ {
+  "id": "eseal",
+  "chip": "Sealants",
+  "title": "Sealant joints",
+  "items": [
+   "Sealant and primer match the submittal or scope; color match (record product)",
+   "Old sealant removed; joint faces clean, dry and primed",
+   "Joint width and depth (record); backer rod size and type; bond breaker where needed",
+   "Tooling and profile; bond to both sides; no voids, skips or smears",
+   "Joints covered: control joints, window perimeters, transitions and past sealant locations per the scope"
+  ]
+ },
+ {
+  "id": "ecoat",
+  "chip": "Coatings",
+  "title": "Coatings and fluid-applied waterproofing",
+  "items": [
+   "Product, coat count and color against the scope (record product per area)",
+   "Application method against the scope: spray and back-roll, roller or brush",
+   "Coverage or thickness: wet-mil readings or gallons per area against the data sheet (record)",
+   "Block filler, base coat or primer applied before finish coats where specified",
+   "Time between coats and cure before traffic or water exposure (record)",
+   "Pinholes, blisters, holidays, runs or thin spots",
+   "Coating continuous over transitions, terminations and edges",
+   "Overspray, drips or coating on glass, metal, landscaping or vehicles"
   ]
  },
  {
@@ -334,7 +384,8 @@ var ENV_SECTIONS = [
    "Terminations at top of wall and grade: bar, sealant, height above finish grade",
    "Protection board or drainage composite placed promptly, oriented and lapped",
    "Foundation drain and fabric in place; membrane condition before backfill"
-  ]
+  ],
+  "more": true
  },
  {
   "id": "eplz",
@@ -349,7 +400,8 @@ var ENV_SECTIONS = [
    "Turn-up height above the membrane and above overburden; termination bar and sealant",
    "Protection course embedded, laps measured",
    "Flood test or electronic leak detection before overburden [ASTM D5957, D7877]"
-  ]
+  ],
+  "more": true
  },
  {
   "id": "ewrb",
@@ -364,7 +416,8 @@ var ENV_SECTIONS = [
    "Pull-off adhesion: disc size, psi, failure mode, repair [ABAA T0002]",
    "Continuity at floor lines, roof-to-wall, wall-to-foundation and dissimilar materials [NIBS GL3]",
    "UV exposure since installation against the manufacturer limit"
-  ]
+  ],
+  "more": true
  },
  {
   "id": "efen",
@@ -378,7 +431,8 @@ var ENV_SECTIONS = [
    "Interior air seal continuous from frame to air barrier",
    "Head flashing or receptor installed; weeps open, not sealed over",
    "Perimeter sealant joint size, backer and tooling [ASTM C1193]"
-  ]
+  ],
+  "more": true
  },
  {
   "id": "eclad",
@@ -392,39 +446,8 @@ var ENV_SECTIONS = [
    "Clips, ties and anchors through the WRB sealed or gasketed per details",
    "Sheet metal copings and sills: slope, laps, cleats, joint covers [SMACNA]",
    "Movement joints located per drawings and open through the cladding"
-  ]
- },
- {
-  "id": "emas",
-  "chip": "Masonry",
-  "title": "Repointing and brick repair",
-  "items": [
-   "Joints raked to a uniform depth, about 2 to 2-1/2 times the joint width, square at the back (record depth and width) [NPS Preservation Brief 2]",
-   "Raking method allowed by the spec; no chipped or widened brick edges",
-   "Raked joints cleaned of dust and loose mortar and dampened before pointing per spec",
-   "Mortar type, mix, color and sand against the spec and the approved mortar sample; not harder than the brick",
-   "Mortar placed in layers no deeper than about 1/4 in., each firm before the next",
-   "Joint tooling profile matches the existing joints",
-   "Damaged brick replaced: count and location; replacement matches size, color and texture",
-   "Replacement brick fully bedded, head and bed joints filled; ties reset or added where specified",
-   "Cracked, spalled or displaced brick recorded (location, crack length and width)",
-   "Curing and weather protection per spec; temperature limits for mortar work",
-   "Cleaning method and mortar smears; weeps, flashing and sealant joints left clear"
-  ]
- },
- {
-  "id": "eseal",
-  "chip": "Sealants",
-  "title": "Sealant joints",
-  "items": [
-   "Sealant and primer match the approved submittal; color; shelf life",
-   "Joint width and depth measured against design (record) [ASTM C1193]",
-   "Backer rod type, size and compression; bond breaker where needed",
-   "Substrate cleaned, primed, dry and frost-free",
-   "Tooling and profile; bond to both sides; voids or contamination",
-   "Field adhesion pulls: location, method, failure mode, repair [ASTM C1521]",
-   "Three-sided adhesion or dissimilar substrates"
-  ]
+  ],
+  "more": true
  },
  {
   "id": "etrans",
@@ -437,11 +460,12 @@ var ENV_SECTIONS = [
    "Plaza or deck turn-up meeting the wall barrier",
    "Clearance from grade, pavers or soil to cladding and flashing",
    "Penetrations at transitions (MEP, rail posts, anchors) sealed per detail"
-  ]
+  ],
+  "more": true
  }
 ];
 var ALL_SECTIONS = CHECK_SECTIONS.concat(ENV_SECTIONS);
-var AGAINST = ["Scope of work","Detail / drawing","Manufacturer requirement","NRCA / accepted practice","Industry standard (ASTM, AAMA, ABAA)","Other"];
+var AGAINST = ["Scope of work","Detail / drawing","Manufacturer requirement","NRCA / accepted practice","Industry standard (ASTM, AAMA, ABAA)","Not in scope (refer to design authority)","Other"];
 var PREPARED = ["Owner","Owner's representative","Design authority","Consultant engaging AssetRoof"];
 var FINAL_CHECKS = [
   ["cc_tag","Report photos tagged Inspection in CompanyCam"],
@@ -473,16 +497,48 @@ function secTitle(key){ var p=key.split("_"); var s=ALL_SECTIONS.filter(function
 /* Enclosure checklist v2 (2026-10-29) removed one line from Pre-installation (index 5) and one
    from Substrate (index 2), and dropped the QA records section. Shift saved answers to match. */
 function migrate(x){
-  if(!x || x.envV>=2) return x;
-  var it=x.items||{}, out={};
-  Object.keys(it).forEach(function(k){
-    var p=k.split("_"), id=p[0], n=+p[1];
-    if(id==="eqa") return;
-    if(id==="epre"){ if(n===5) return; if(n>5) n--; }
-    if(id==="esub"){ if(n===2) return; if(n>2) n--; }
-    out[id+"_"+n]=it[k];
+  if(!x || x.envV>=3) return x;
+  x.notes=x.notes||[]; x.extraDevs=x.extraDevs||[];
+  function keep(lab, a){
+    var d=a.dev||{};
+    if(a.s==="dev") x.extraDevs.push({title:lab+(a.n?": "+a.n:""),loc:d.loc||"",against:d.against||"",ref:d.ref||"",who:d.who||"",when:d.when||"",status:d.status||"open"});
+    else if(a.n) x.notes.push({date:x.meta&&x.meta.date||"",time:"",text:lab+": "+a.n});
+  }
+  if(!(x.envV>=2)){
+    var QA=["Test plan","Failures logged","Gauge and tester IDs","Contractor QC records cross-checked","Work covered since the last visit"];
+    var it=x.items||{}, out={};
+    Object.keys(it).forEach(function(k){
+      var p=k.split("_"), id=p[0], n=+p[1];
+      if(id==="eqa"){ keep(QA[n]||"QA record", it[k]); return; }
+      if(id==="epre"){ if(n===5){ keep("Mock-up", it[k]); return; } if(n>5) n--; }
+      if(id==="esub"){ if(n===2){ keep("Concrete moisture", it[k]); return; } if(n>2) n--; }
+      out[id+"_"+n]=it[k];
+    });
+    x.items=out; x.envV=2;
+  }
+  /* v3 (2026-11-12): enclosure rebuilt around prep, repair, sealant and coating work.
+     Answers move to the matching new line; two answers on one line are merged.
+     An answer with no new line becomes a general note, or an "other deviation" if it was one. */
+  var MAP = {
+    epre:[["eprod",1],["eprod",0],["eprod",2],null,["eprod",3],null,null],
+    esub:[["eprep",3],["erep",3],["eprep",4],["erep",2],["erep",2],["eprep",5]],
+    emas:[["erep",4],["erep",4],["erep",4],["erep",5],["erep",5],["erep",5],["erep",6],["erep",6],["erep",6],["erep",8],["erep",8]],
+    eseal:[["eseal",0],["eseal",2],["eseal",2],["eseal",1],["eseal",3],["eseal",3],["eseal",3]]
+  };
+  var OLD = {
+    epre:["Approved submittals on site","Products on site match approved submittals","Material storage and protection","Installer qualification on site","Air and surface temperature, RH and dew point","Contractor QC records current","Areas observed"]
+  };
+  var it2=x.items||{}, out2={}, rank={dev:3,ok:2,no:1};
+  Object.keys(it2).forEach(function(k){
+    var p=k.split("_"), id=p[0], n=+p[1], a=it2[k];
+    if(!MAP[id]){ out2[k]=a; return; }
+    var to=MAP[id][n];
+    if(!to){ keep((OLD[id]&&OLD[id][n])||k, a); return; }
+    var nk=to[0]+"_"+to[1], cur=out2[nk];
+    if(!cur){ out2[nk]=a; return; }
+    out2[nk]={ s:(rank[a.s]||0)>(rank[cur.s]||0)?a.s:cur.s, n:[cur.n,a.n].filter(Boolean).join("; "), dev:cur.dev||a.dev };
   });
-  x.items=out; x.envV=2; return x;
+  x.items=out2; x.envV=3; return x;
 }
 
 /* Which scopes this report covers. Older records have no setting and were roofing only. */
@@ -492,6 +548,14 @@ function keyActive(k, x){ var d=discOf(x), id=k.split("_")[0];
   if(CHECK_SECTIONS.some(function(s){return s.id===id;})) return d.roof;
   if(ENV_SECTIONS.some(function(s){return s.id===id;})) return d.env;
   return false; }
+/* Checklist sections start collapsed. Sections with any answer open when a report is loaded. */
+var OPEN = {}, openFor = null;
+function secMarked(sec){ return sec.items.some(function(_,i){ return !!(S.items[sec.id+"_"+i]||{}).s; }); }
+function initOpen(){
+  OPEN = {}; openFor = S.id;
+  ALL_SECTIONS.forEach(function(sec){ if(secMarked(sec)) OPEN[sec.id]=true; });
+  if(ENV_SECTIONS.some(function(sec){ return sec.more && OPEN[sec.id]; })) OPEN.__more = true;
+}
 function scopeText(x){ var d=discOf(x); return [d.roof?"Roofing":"", d.env?"Building enclosure and waterproofing":""].filter(Boolean).join("; "); }
 
 function blank(){
@@ -504,7 +568,7 @@ function blank(){
     scope:{ assembly:"", area:"" },
     items:{},
     qty:{ installed:"", delivered:"", testing:"" },
-    disc:{ roof:true, env:false }, envV:2,
+    disc:{ roof:true, env:false }, envV:3, notes:[],
     extraDevs:[], comms:[], carried:[], checks:{}
   };
 }
@@ -523,7 +587,7 @@ function nextFrom(prev){
     if(d && d.status==="corrected") return;
     seq++; n.carried.push({ id:"OI-"+seq, title:title+(d&&d.loc?" ("+d.loc+")":""), origin:origin, status:"open", note:"" });
   }
-  Object.keys(prev.items||{}).forEach(function(k){ var it=prev.items[k]; if(it.s==="dev" && keyActive(k, prev)) pushDev(itemTitle(k)+(it.n?": "+it.n:""), it.dev||{}); });
+  Object.keys(prev.items||{}).forEach(function(k){ var it=prev.items[k]; if(it.s==="dev" && keyActive(k, prev)) pushDev(it.n||itemTitle(k), it.dev||{}); });
   (prev.extraDevs||[]).forEach(function(d){ pushDev(d.title||"Deviation", d); });
   n.oiSeq = seq;
   return n;
@@ -755,7 +819,7 @@ function renderAll(){
     '<p class="hint">Check what this report covers. Each checked scope adds its own checklist sections.</p>'+
     '<div class="body" style="gap:0">'+
       '<label class="check"><input type="checkbox" data-disc="roof"'+(dsc.roof?" checked":"")+'><span><b>Roofing</b><br><small>Tear-off, insulation, membrane, flashing, edges, penetrations, drainage</small></span></label>'+
-      '<label class="check"><input type="checkbox" data-disc="env"'+(dsc.env?" checked":"")+'><span><b>Building enclosure and waterproofing</b><br><small>Below-grade and plaza waterproofing, air and water barriers, openings, cladding flashings, repointing and brick repair, sealant joints</small></span></label>'+
+      '<label class="check"><input type="checkbox" data-disc="env"'+(dsc.env?" checked":"")+'><span><b>Building enclosure and waterproofing</b><br><small>Surface prep, concrete and masonry repair, sealant joints, coatings and fluid-applied waterproofing. More sections for new construction.</small></span></label>'+
     '</div>');
 
   h += card("sec-crew","Crew, trades and equipment","Report §5",
@@ -788,9 +852,17 @@ function renderAll(){
       field(dsc.env?"Area worked today (roof area, elevation, level, grid lines)":"Roof area or section worked today","scope.area",{ph:dsc.env?"North elevation, levels 2-3, grid A-D":"West sections, north parapet"})+
     '</div>');
 
-  var envStart = dsc.env ? ENV_SECTIONS[0] && ENV_SECTIONS[0].id : null;
+  if(openFor !== S.id) initOpen();
+  var envStart = dsc.env ? ENV_SECTIONS[0] && ENV_SECTIONS[0].id : null, moreDone = false;
   activeSections().forEach(function(sec){
     if(sec.id===envStart && dsc.roof) h += '<h2 class="group">Building enclosure and waterproofing</h2>';
+    if(sec.more && !moreDone){
+      moreDone = true;
+      var mOpen = !!OPEN.__more, mMarked = ENV_SECTIONS.filter(function(x){ return x.more && secMarked(x); }).length;
+      h += '<button type="button" class="moretog" id="sec-more" data-tog="__more" aria-expanded="'+mOpen+'"><span class="chev">'+(mOpen?"&#9662;":"&#9656;")+'</span>More enclosure sections'+
+        '<small>'+(mMarked?mMarked+" in use":"Below-grade sheet, plaza deck, air barrier, openings, cladding flashings, transitions")+'</small></button>';
+    }
+    if(sec.more && !OPEN.__more) return;
     var done=0, devs=0;
     var body = sec.items.map(function(txt,i){
       var key=sec.id+"_"+i, it=S.items[key]||{};
@@ -807,8 +879,21 @@ function renderAll(){
       '</div>';
     }).join("");
     var cnt = '<span class="cnt">'+done+"/"+sec.items.length+(devs?' · <span style="color:var(--dev)">'+devs+' dev</span>':'')+'</span>';
-    h += card("sec-"+sec.id, sec.title, "", (sec.hint?'<p class="hint">'+esc(sec.hint)+'</p>':"")+body, cnt);
+    var isOpen = !!OPEN[sec.id];
+    h += '<section class="card coll'+(isOpen?' open':'')+(sec.more?' moresec':'')+'" id="sec-'+sec.id+'">'+
+      '<header data-tog="'+sec.id+'" role="button" tabindex="0" aria-expanded="'+isOpen+'"><span class="chev">'+(isOpen?"&#9662;":"&#9656;")+'</span><h2>'+esc(sec.title)+'</h2>'+cnt+'</header>'+
+      (isOpen ? (sec.hint?'<p class="hint">'+esc(sec.hint)+'</p>':"")+body : '')+'</section>';
   });
+
+  var nt = (S.notes||[]).map(function(nn,i){
+    return '<div class="entry"><div class="eh"><b>Note '+(i+1)+'</b><button type="button" class="x" data-del="notes.'+i+'">Remove</button></div>'+
+      '<div class="grid2">'+field("Date","notes."+i+".date",{type:"date"})+field("Time","notes."+i+".time",{type:"time", now:true})+'</div>'+
+      field("What you observed","notes."+i+".text",{area:true, ph:"Anything that does not fit a checklist line. Facts and numbers."})+
+    '</div>';
+  }).join("");
+  h += card("sec-notes","General notes","Report §5",
+    '<p class="hint">Observations that do not fit a checklist line. They print under Work observed.</p>'+
+    '<div class="body">'+nt+'<button type="button" class="add" data-add="notes">Add note</button></div>');
 
 
   h += card("sec-qty","Quantities, deliveries and testing","Report §5",
@@ -864,10 +949,12 @@ function renderChrome(){
   var m=S.meta;
   document.getElementById("hTitle").textContent = m.project || "RRO Daily Observation";
   document.getElementById("hSub").textContent = "Report "+(m.reportNo||"-")+" · "+(fmtDate(m.date)||"no date")+(devCount()?" · "+devCount()+" deviation"+(devCount()>1?"s":""):"");
-  var total=0, done=0; activeSections().forEach(function(s){ s.items.forEach(function(_,i){ total++; if((S.items[s.id+"_"+i]||{}).s) done++; }); });
+  var total=0, done=0; activeSections().filter(secMarked).forEach(function(s){ s.items.forEach(function(_,i){ total++; if((S.items[s.id+"_"+i]||{}).s) done++; }); });
   document.getElementById("progFill").style.width = (total?Math.round(done/total*100):0)+"%";
   var chips = [["sec-id","ID"],["sec-scopepick","Scope"],["sec-crew","Crew"],["sec-wx","Weather"],["sec-scope","Area"]]
-    .concat(activeSections().map(function(s){ return ["sec-"+s.id, s.chip || s.title.split(/,| and /)[0]]; }))
+    .concat(activeSections().filter(function(s){ return !s.more; }).map(function(s){ return ["sec-"+s.id, s.chip || s.title.split(/,| and /)[0]]; }))
+    .concat(discOf().env?[["sec-more","More"]]:[])
+    .concat([["sec-notes","Notes"]])
     .concat([["sec-qty","Quantities"],["sec-dev","Deviations"],["sec-comm","Comms"],["sec-open","Open items"],["sec-close","Sign-off"]]);
   document.getElementById("chips").innerHTML = chips.map(function(c){
     var hot = c[0]==="sec-dev" && devCount();
@@ -897,7 +984,13 @@ app.addEventListener("change", function(e){
   }
   var b=el.getAttribute("data-bind"); if(b && el.tagName==="SELECT"){ setP(S,b,el.value); touch(); }
 });
+function toggleSec(id){ OPEN[id]=!OPEN[id]; keepPlace(id==="__more"?"sec-more":"sec-"+id, renderAll); }
+app.addEventListener("keydown", function(e){
+  var tg=e.target.closest && e.target.closest("header[data-tog]");
+  if(tg && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); toggleSec(tg.dataset.tog); }
+});
 app.addEventListener("click", function(e){
+  var tg=e.target.closest("[data-tog]"); if(tg){ toggleSec(tg.dataset.tog); return; }
   var t=e.target.closest("button"); if(!t) return;
   if(t.dataset.tri){
     var key=t.dataset.tri, it=S.items[key]||{n:""};
@@ -913,6 +1006,7 @@ app.addEventListener("click", function(e){
     var k=t.dataset.add;
     if(k==="extraDevs") S.extraDevs.push({title:"",loc:"",against:"",ref:"",who:"",when:"",status:"open"});
     if(k==="comms") S.comms.push({time:nowHM(),who:"",asked:"",said:"",da:false});
+    if(k==="notes"){ if(!S.notes) S.notes=[]; S.notes.push({date:S.meta.date||todayISO(), time:nowHM(), text:""}); }
     if(k==="carried"){ var mx=S.carried.reduce(function(a,c){ var n=parseInt(String(c.id).replace(/\D/g,""),10); return isNaN(n)?a:Math.max(a,n); }, S.oiSeq||0);
       S.oiSeq=mx+1; S.carried.push({id:"OI-"+(mx+1),title:"",origin:"",status:"open",note:""}); }
     touch(); keepPlace(null, renderAll); return;
@@ -927,7 +1021,10 @@ function keepPlace(anchorId, fn){
 }
 document.getElementById("chips").addEventListener("click", function(e){
   var a=e.target.closest("a[data-jump]"); if(!a) return; e.preventDefault();
-  var s=document.getElementById(a.dataset.jump); if(s) s.scrollIntoView({behavior:"smooth", block:"start"});
+  var j=a.dataset.jump, sid=j.replace(/^sec-/,"");
+  if(j==="sec-more" && !OPEN.__more){ OPEN.__more=true; renderAll(); }
+  else if(ALL_SECTIONS.some(function(x){ return x.id===sid; }) && !OPEN[sid]){ OPEN[sid]=true; renderAll(); }
+  var s=document.getElementById(j); if(s) s.scrollIntoView({behavior:"smooth", block:"start"});
 });
 
 /* ------------------------------------------------------- gaps and report */
@@ -944,6 +1041,7 @@ function gaps(){
   hard(S.scope.area,"Area worked today");
   Object.keys(S.items).forEach(function(k){
     var it=S.items[k]; if(it.s!=="dev" || !keyActive(k)) return; var d=it.dev||{}, lab=itemTitle(k);
+    hard(it.n,"Describe what was observed: "+lab);
     hard(d.loc,"Deviation location: "+lab); hard(d.against,"Deviation measured against: "+lab);
     hard(d.who && d.when,"Who was notified and when: "+lab);
   });
@@ -953,15 +1051,16 @@ function gaps(){
     hard(d.against,"Measured against: "+lab); hard(d.who && d.when,"Who was notified and when: "+lab);
   });
   S.carried.forEach(function(c){ hard(c.note || c.status==="closed" && c.note,"Status today for "+(c.id||"open item")+(c.title?": "+c.title:"")); });
-  var none=0; activeSections().forEach(function(s){ s.items.forEach(function(_,i){ if(!(S.items[s.id+"_"+i]||{}).s) none++; }); });
-  soft(!none, none+" checklist lines not marked (they report as not observed)");
+  var none=0; activeSections().filter(secMarked).forEach(function(s){ s.items.forEach(function(_,i){ if(!(S.items[s.id+"_"+i]||{}).s) none++; }); });
+  soft(!none, none+" lines not marked in sections you used (they report as not observed)");
+  (S.notes||[]).forEach(function(nn,i){ soft(nn.text, "General note "+(i+1)+" is empty"); });
   FINAL_CHECKS.forEach(function(c){ soft(S.checks[c[0]], c[1]); });
   return G;
 }
-function devText(n, title, d){
+function devText(n, title, d, observed){
   var L=[];
   L.push(n+". "+title);
-  L.push("   Observed: "+title);
+  L.push("   Observed: "+(observed||title));
   L.push("   Location: "+(d.loc||"[CHECK: location]"));
   L.push("   Measured against: "+((d.against||"[CHECK: document]")+(d.ref?", "+d.ref:"")));
   L.push("   Notified: "+(d.who? d.who+(d.when?", "+fmtTime(d.when):" [CHECK: time]") : "[CHECK: who was notified and when]"));
@@ -1011,13 +1110,15 @@ function buildReport(){
     });
     if(lines.length){ L.push(sec.title+":"); L.push(lines.join("\n")); }
   });
+  var notes=(S.notes||[]).filter(function(nn){ return nn.text; });
+  if(notes.length){ L.push("Other observations:"); notes.forEach(function(nn){ L.push("  - "+[fmtDate(nn.date), fmtTime(nn.time)].filter(Boolean).join(" ")+(nn.date||nn.time?": ":"")+nn.text); }); }
   if(S.qty.installed) L.push("Installed / running quantity: "+S.qty.installed);
   if(S.qty.delivered) L.push("Delivered, storage, protection: "+S.qty.delivered);
   L.push("Testing observed: "+(S.qty.testing||"None recorded"));
 
   hdr("Deviations and nonconforming work");
   var n=0;
-  Object.keys(S.items).forEach(function(k){ var it=S.items[k]; if(it.s!=="dev" || !keyActive(k)) return; n++; L.push(devText(n, itemTitle(k)+(it.n?": "+it.n:""), it.dev||{})); });
+  Object.keys(S.items).forEach(function(k){ var it=S.items[k]; if(it.s!=="dev" || !keyActive(k)) return; n++; L.push(devText(n, itemTitle(k), it.dev||{}, it.n||"[CHECK: describe what was observed]")); });
   S.extraDevs.forEach(function(d){ n++; L.push(devText(n, d.title||"[CHECK: describe]", d)); });
   if(!n) L.push("None observed. Work observed conformed to the documents.");
 
