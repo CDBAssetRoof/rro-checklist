@@ -1260,9 +1260,7 @@ document.getElementById("btnHist").onclick=function(){
   var list = allInspections(), m=S.meta, next=pad3((parseInt(m.reportNo,10)||0)+1);
   var groups = groupByProject(list), curKey = projKey(S);
   function plural(n){ return n+" report"+(n===1?"":"s"); }
-  var body = '<div class="newbox">'+
-    (m.project ? '<p>Start report '+esc(next)+' for '+esc(m.project)+'. Project details and every open item carry over.</p><button type="button" class="primary" id="newSame">Start report '+esc(next)+'</button>' : '')+
-    '<button type="button" id="newBlank">Start a different project</button></div>'+
+  var body = '<div class="newbox"><button type="button" class="primary" id="newBlank">Start new project</button></div>'+
     '<div class="projs">'+(groups.length ? groups.map(function(g,gi){
       var lm=g.items[0].meta||{}, here=g.key===curKey;
       return '<details class="proj'+(here?' cur':'')+'"'+(here?' open':'')+'>'+
@@ -1287,8 +1285,7 @@ document.getElementById("btnHist").onclick=function(){
     '</div>';
   openSheet("Inspections", body);
   var byId={}; list.forEach(function(x){ byId[x.id]=x; });
-  var ns=document.getElementById("newSame"); if(ns) ns.onclick=function(){ S=nextFrom(S); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("Report "+S.meta.reportNo+" started"); };
-  document.getElementById("newBlank").onclick=function(){ S=blank(); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("New inspection started"); };
+  document.getElementById("newBlank").onclick=function(){ S=blank(); S.updated=Date.now(); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); toast("New project started"); };
   document.querySelectorAll("[data-open]").forEach(function(b){ b.onclick=function(){ var x=byId[b.dataset.open]; if(!x) return; S=clone(x); lsWrite(); closeSheet(); renderAll(); window.scrollTo(0,0); }; });
   document.getElementById("btnBackup").onclick=function(){ backupAll().then(function(r){ if(r==="saved") toast("Backup saved to Downloads"); }); };
   var rf=document.getElementById("restoreFile");
